@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+   <link rel="stylesheet" href="./css/create.css" type="text/css">
+    <title>Decapay|Loan</title>
+</head>
+<body>
+    
+        
+            <div id="wrapper1" class="jumbotron col-md-7">
+                    
+                 <img src="./images/logo.jpeg">
+    
+            </div>
+            <div id="wrapper2" class="jumbotron col-md-7" style="padding: 0;">
+
+                    <section id="form-container" class="jumbotron mt-5">
+
+                            <h3>Create a loan</h3>
+                            <form id="form">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="inputEmail4">Lender</label>
+                                            <input type="text" class="form-control" id="inputEmail4" placeholder="Name of lender">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                                <label for="inputEmail4">Amount</label>
+                                                <input type="number" class="form-control" id="inputEmail4" placeholder="Amount borrowed">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                                <label for="inputEmail4">Rate</label>
+                                                <input type="number" min="0" class="form-control" id="inputEmail4" placeholder="Interest rate">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                                <label for="inputEmail4">Interest Type</label>
+                                                <input type="number" min="0" class="form-control" id="inputEmail4" placeholder="Type of rate">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                                <label for="inputEmail4">Start Date</label>
+                                                <input type="date" class="form-control" id="date" placeholder="Date borrowed">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                                <label for="inputEmail4">End Date</label>
+                                                <input type="date" class="form-control" id="date" placeholder="Repayment start date">
+                                        </div>
+
+                                    </div>
+                    
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4">
+                                                <label for="inputState">Repayment period</label>
+                                                <select id="period" class="form-control">
+                                                    <option selected disabled>Choose...</option>
+                                                    <option value="monthly">Monthly</option>
+                                                    <option value="annualy">Annualy</option>
+                                                    <option value="bi-annualy">Bi-annualy</option>
+                                                </select>
+                                            </div>
+                            
+                                        </div>
+                      
+                                    <button type="submit" id="btn1" class="btn btn-primary">Create Loan</button>
+                                </form>
+                        
+                    </section>
+                
+            </div>
+           
+        </div>
+    </div>
+
+</body>
+</html>

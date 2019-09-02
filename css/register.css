@@ -13,7 +13,7 @@ body {
   background-color: #201d3a;
   border-radius: 0;
   margin: 0 auto;
-  height: 30vh;
+  height: 40vh;
   text-align:center;
 }
 #wrapper2 {
@@ -23,7 +23,7 @@ body {
   grid-template-columns: 1fr 2fr 2fr 1fr;
   grid-template-rows: auto;
   z-index: 1;
-  max-height: auto;;
+  min-height: 580px;
 }
 #form-container {
   background-color: #ffffff;
@@ -60,3 +60,19 @@ h3{
      width: auto;
      text-align: center;
 }
+
+@media only screen and (max-width: 415px) {
+    /* For mobile phones: */
+    #wrapper2 {
+
+        display: grid;
+        grid-template-columns: 1fr;
+        height: 500px;
+
+      }
+    #form-container {
+        grid-column: 1;
+        height: auto;
+    }
+
+  }
