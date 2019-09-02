@@ -22,7 +22,7 @@ body {
   background-color: #201d3a;
   display: flex;
   justify-content: center;
-  align-content: flex-end;
+  align-items: center;
 }
 .form-inpt {
   margin: 20px 0 20px 0;
