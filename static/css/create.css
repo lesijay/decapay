@@ -1,0 +1,161 @@
+<<<<<<< HEAD:css/create.css
+body {
+    background-color: #f2f4f8;
+    margin: 0;
+    padding: 0;
+  }
+  #btn1 {
+    width: 100%;
+    background-color: #a0d231;
+    border: none;
+  }
+  
+  #wrapper1 {
+    background-color: #201d3a;
+    border-radius: 0;
+    margin: 0 auto;
+    height: 30vh;
+    text-align:center;
+  }
+  #wrapper2 {
+    border-radius: 0;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 1fr;
+    grid-template-rows: auto;
+    z-index: 1;
+    height: auto;
+  }
+  #form-container {
+    background-color: #ffffff;
+    border-radius: 0;
+    width: 100%;
+    grid-row:4;
+    grid-column: 2/4;
+    position: relative;
+    top: -10%;
+    z-index: 2;
+    height: auto;
+  }
+  
+  .img{
+      width: 100%;
+      text-align: center;
+      grid-column: 2/4;
+      position: relative;
+  
+  }
+  img{
+      width: 30%;
+  }
+  
+  
+  h3{
+      margin-top: -8%;
+  }
+  #form{
+      margin-top: 10%;
+  }
+  #link{
+      display: block;
+       width: auto;
+       text-align: center;
+  }
+  
+  @media only screen and (max-width: 415px) {
+      /* For mobile phones: */
+      #wrapper2 {
+  
+          display: grid;
+          grid-template-columns: 1fr;
+          height: 500px;
+  
+        }
+      #form-container {
+          grid-column: 1;
+          height: auto;
+      }
+  
+    }
+=======
+body {
+    background-color: #f2f4f8;
+    margin: 0;
+    padding: 0;
+  }
+  #btn1 {
+    width: 100%;
+    background-color: #a0d231;
+    border: none;
+  }
+  
+  #wrapper-1 {
+    background-color: #201d3a;
+    border-radius: 0;
+    margin: 0 auto;
+    height: 30vh;
+    text-align:center;
+  }
+  #wrapper-2 {
+    border-radius: 0;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 1fr;
+    grid-template-rows: auto;
+    z-index: 1;
+    max-height: auto;
+    background-color: #f2f4f8;
+    
+  }
+  #form-containers {
+    background-color: #ffffff;
+    border-radius: 0;
+    width: 70%;
+    grid-row:4;
+    grid-column: 2/4;
+    margin: -600px auto 0px auto;
+    max-height: 450px;
+    
+  
+  }
+  
+  .img{
+      width: 100%;
+      text-align: center;
+      grid-column: 2/4;
+      position: relative;
+  
+  }
+  img{
+      width: 30%;
+  }
+  
+  
+  h3{
+      margin-top: 0%;
+  }
+  #forms{
+      margin-top: 10%;
+  }
+  #links{
+      display: block;
+       width: auto;
+       text-align: center;
+  }
+  
+  @media only screen and (max-width: 415px) {
+      /* For mobile phones: */
+      #wrapper-2 {
+  
+          display: grid;
+          grid-template-columns: 1fr;
+          height: 500px;
+  
+        }
+      #form-containers {
+          grid-column: 1;
+          height: auto;
+      }
+  
+    }
+>>>>>>> install sqlite and flask:static/css/create.css
