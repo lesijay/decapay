@@ -1,0 +1,120 @@
+body{
+ background: #F2F4F8;
+ font-family: 'Arvo', serif;
+}
+ul,
+li{
+    text-decoration: none;
+    list-style: none;
+
+}
+a{
+    text-decoration: none;
+}
+.nav-container{
+    position: fixed;
+    z-index: 3;
+    display: flex;
+    background: #201D3A;
+    height: 10vh;
+    width: 98vw;
+}
+.logo-container{
+    margin-right: auto;
+    width: 180px;
+}
+.logo{
+    width: 100%;
+    height: 100%;
+}
+.links-container a{
+    color: white
+}
+.links-container{
+    display: flex;
+    background: #201D3A;
+    transition: transform 1s ease-in;
+    -webkit-transition: transform 1s ease-in;
+    -moz-transition: transform 1s ease-in;
+    -ms-transition: transform 1s ease-in;
+    -o-transition: transform 1s ease-in;
+}
+.links-container li{
+    margin: 10px;
+}
+.bugger{
+    display: none;
+    margin: 18px 10px;
+    font-size: 30px;
+    color: white;
+}
+
+@media screen and (max-width: 570px) {
+    .bugger{
+        display: block;
+        margin-left: auto;
+       
+
+    }
+    .links-container{
+        display: flex;
+        margin-right: 40px;
+        margin-top: 10vh;
+        flex-direction: column;
+        height: 95vh;
+        background: #201D3A;
+        transform: translateX(180%);
+        -webkit-transform: translateX(180%);
+        -moz-transform: translateX(180%);
+        -ms-transform: translateX(180%);
+        -o-transform: translateX(180%);
+}
+
+.showNav{
+    transform: translateX(57%);
+    -webkit-transform: translateX(57%);
+    -moz-transform: translateX(57%);
+    -ms-transform: translateX(57%);
+    -o-transform: translateX(57%);
+    display: flex;
+    margin-right: 40px;
+    margin-top: 10vh;
+    flex-direction: column;
+    height: 95vh;
+    background: #201D3A;
+}
+
+}
+.hero{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: #201D3A;
+    height: 30vh;
+    color: white;
+}
+.info{
+    color: #A0D231 ;
+}
+.grid-image{
+    width: 100%;
+    height: 100%;
+}
+.how-section1 .row{
+    margin-top: 5%;
+}
+.how-img h2{
+    padding-top: 10%;
+}
+
+#howItWorks{
+    text-align: center
+}
+.how-img 
+{
+    text-align: center;
+}
+.how-img img{
+    width: 40%;
+}
