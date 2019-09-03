@@ -1,6 +1,6 @@
 #header{
-    background-image: url("../image/logo.jpeg");
-    background-size: 500px;;
+    background-image: url("../images/logo.jpeg");
+    background-size: 00px;;
     background-repeat: no-repeat;
     border-radius: 0;
     height: 300px;
@@ -10,13 +10,18 @@
 }
 
 #pix{
-    border-radius: 50%;
+    
     width: 200px;
     height: 200px;
     margin: 0 auto;
     z-index: 3;
     border: 2px solid white;  
     background-color: #ffff;
+}
+img{
+    width: 100%;
+    height: 100%;
+    
 }
 #wrapper{
     margin-top: -100px;
