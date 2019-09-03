@@ -23,7 +23,7 @@ body {
     grid-template-columns: 1fr 2fr 2fr 1fr;
     grid-template-rows: auto;
     z-index: 1;
-    height: 500px;
+    height: auto;
   }
   #form-container {
     background-color: #ffffff;
@@ -32,9 +32,9 @@ body {
     grid-row:4;
     grid-column: 2/4;
     position: relative;
-    top: -17%;
+    top: -10%;
     z-index: 2;
-  
+    height: auto;
   }
   
   .img{
