@@ -36,6 +36,7 @@ def register():
 @app.route('/create')
 def create():
     return render_template("create.html")
+    
 @app.route('/payment')
 def payment():
     return render_template("duepayment.html")
