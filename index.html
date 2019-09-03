@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>decapay</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.2">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+    <div>
+        <nav class="nav-container">
+            <div class="logo-container">
+                <img src="./images/logo.jpeg" alt="logo" class="logo">
+            </div>
+            <ul class="links-container">
+                <li><a class="navbar-brand" href="#menu1">Log in</a></li>
+                <li><a class="navbar-brand" href="#menu2">Sign up</a></li>
+            </ul>
+            <div class="bugger">
+                <i class="fa fa-bars"></i>
+            </div>
+
+        </nav>
+    </div>
+    <div class="hero">
+        <h1>Decapay</h1>
+        <p>Your number one <span class="info">loan</span> tracker</p>
+    </div>
+
+
+    <div class="how-section1">
+        <div class="row">
+            <div class="col-md-6 how-img">
+                <img src="./images/loanAccess.svg" class="rounded-circle img-fluid" alt="" />
+            </div>
+            <div class="col-md-6 how-img">
+                <h2>Register your loan</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 how-img">
+                <h2>Monitor your loan</h2>
+            </div>
+            <div class="col-md-6 how-img">
+                <img src="./images/monitor.svg" class="rounded-circle img-fluid" alt="" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 how-img">
+                <img src="./images/loan.svg" class="rounded-circle img-fluid" alt="" />
+            </div>
+            <div class="col-md-6 how-img">
+                <h2>Clear your loan Early</h2>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const buggerDOM = document.querySelector(".bugger");
+        const linksContainerDOM = document.querySelector('.links-container');
+        buggerDOM.addEventListener("click", () => {
+            linksContainerDOM.classList.toggle('showNav')
+        })
+    </script>
+</body>
+
+</html>
