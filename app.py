@@ -1,6 +1,7 @@
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 # from flask_session import Session
 from cs50 import SQL
+from helpers import naira
 
 app = Flask(__name__)
 
@@ -20,8 +21,8 @@ db = SQL("sqlite:///decapay.db")
 
 @app.route('/')
 def index():
-    k = db.execute("SELECT * FROM users ")    
-    print(k)
+    # k = db.execute("SELECT * FROM users ")    
+    # print(k)
     print("joel test")
     return render_template("index.html")
 
@@ -33,9 +34,12 @@ def login():
 def register():
     return render_template("register.html")
 
-@app.route('/create')
+@app.route('/create', methods=["GET", "POST"])
 def create():
-    return render_template("create.html")
+    if request.method=="GET":
+        loantype = request.args.get("loantype")
+        print(loantype)
+        return render_template("create.html")
     
 @app.route('/payment')
 def payment():
