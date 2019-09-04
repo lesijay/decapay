@@ -9,13 +9,13 @@ body {
   border: none;
 }
 
-#wrapper1 {
+/* #wrapper1 {
   background-color: #201d3a;
   border-radius: 0;
   margin: 0 auto;
   height: 40vh;
   text-align:center;
-}
+} */
 #wrapper2 {
   border-radius: 0;
   margin: 0 auto;
@@ -32,21 +32,11 @@ body {
   width: 70%;
   grid-row:4;
   grid-column: 2/4;
-  margin: -340px auto 0px auto;
+  margin: 0px auto 0px auto;
 
 }
 
 
-.img{
-    width: 100%;
-    text-align: center;
-    grid-column: 2/4;
-    position: relative;
-
-}
-img{
-    width: 30%;
-}
 
 
 h3{
