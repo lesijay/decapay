@@ -38,8 +38,9 @@ def register():
 def create():
     if request.method=="GET":
         loantype = request.args.get("loantype")
-        print(loantype)
-        return render_template("create.html")
+        interestRate = 0.03
+        if loantype == "decamini":
+                return render_template("create.html",loantype=loantype, mini=100000, max=300000, interestRate=interestRate)
     
 @app.route('/payment')
 def payment():

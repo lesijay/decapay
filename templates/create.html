@@ -12,31 +12,34 @@
             </div> -->
 <div class="div1">
 </div>
-<div id="wrapper-2" class="jumbotron col-md-7" style="padding: 0;">
+<div id="wrapper-2" class="jumbotron col-md-12" style="padding: 0;">
 
-    <section id="form-containers" class="jumbotron mt-5 shadow">
+    <section id="form-containers" class="jumbotron shadow">
 
         <h3>Create a loan</h3>
         <form id="form">
             <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="inputState">Loan Type</label>
-                    <select id="period" class="form-control">
-                        <option selected disabled>Choose...</option>
-                        <option value="mini">Deca Mini</option>
-                        <option value="flex">Deca flex</option>
-                        <option value="large">Deca Large</option>
+                <div class="form-group col-md-12">
+                    <label for="loantype">Loan Type</label>
+                
+                    <select id="loantype" class="form-control">
+                        <option selected disabled>{{loantype}}</option>
                     </select>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputEmail4">Amount</label>
-                    <input type="number" class="form-control" id="inputEmail4" placeholder="Amount borrowed">
+                    <input type="number" class="form-control" min={{mini}} max={{max}} value="amountborrowed" placeholder="Amount borrowed">
+                    <!-- <input type="text" name="amountborrowed" step="10000" value="100000" min="100000" max="990000">
+                    </div>
+                     -->
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4">Rate</label>
-                    <input type="number" min="0" class="form-control" id="inputEmail4" placeholder="Interest rate">
+                    <label for="interestrate">Rate</label>
+                    <select id="interestrate" class="form-control">
+                            <option selected disabled>{{interestRate}}</option>
+                    </select>
                 </div>
-                <div class="form-group col-md-6">
+                <!-- <div class="form-group col-md-6">
                     <label for="inputEmail4">Interest Type</label>
                     <input type="number" min="0" class="form-control" id="inputEmail4" placeholder="Type of rate">
                 </div>
@@ -47,11 +50,19 @@
                 <div class="form-group col-md-6">
                     <label for="inputEmail4">End Date</label>
                     <input type="date" class="form-control" id="date" placeholder="Repayment start date">
-                </div>
-
+                </div> -->
+            
+                <div class="form-group col-md-6">
+                        <label for="period">Period (Months)</label>
+                        <input type="number" class="form-control" min="1" max="12" value="amountborrowed" placeholder="Repayment Period">
+                        <!-- <input type="text" name="amountborrowed" step="10000" value="100000" min="100000" max="990000">
+                        </div>
+                         -->
+                    </div>
+    
             </div>
-
-            <div class="form-row">
+            
+            <!-- <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputState">Repayment period</label>
                     <select id="period" class="form-control">
@@ -62,23 +73,19 @@
                     </select>
                 </div>
 
-            </div>
-            <div class="jumbotron form-group col-md-12 ">
+            </div> -->
+            <!-- <div class="jumbotron form-group col-md-12 ">
                 <table class="table table-striped table-dark text-center">
                     <thead>
                         <tr>
-                            <td scope="col">Amount</td>
-                            <td scope="col">Rate</td>
-                            <td scope="col">Repayment</td>
+                            <td scope="col">Monthly Repayment</td>
                         </tr>
                     </thead>
                     <tbody>
-                        <td>N1000</td>
-                        <td>5%</td>
                         <td>N15000</td>
                     </tbody>
                 </table>
-            </div>
+            </div> -->
 
             <button type="submit" id="btn1" class="btn btn-primary">Create Loan</button>
         </form>
@@ -87,6 +94,5 @@
 
 </div>
 
-</div>
 </div>
 {% endblock %}

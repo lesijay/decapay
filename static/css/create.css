@@ -19,7 +19,7 @@ a:hover {
 }
 #wrapper-2 {
   border-radius: 0;
-  margin: 0 auto;
+  margin: 10 auto auto auto;
   display: grid;
   grid-template-columns: 1fr 2fr 2fr 1fr;
   grid-template-rows: auto;
@@ -36,7 +36,7 @@ a:hover {
   width: 70%;
   grid-row: 4;
   grid-column: 2/4;
-  margin: -100px auto 0px auto;
+  margin: -50px auto 0px auto;
 }
 .jumbotron {
   background-color: #fff;
@@ -75,4 +75,9 @@ h3 {
     grid-column: 1;
     height: auto;
   }
+}
+
+.loanType {
+  font-weight: bold;
+  margin: 10px;
 }
