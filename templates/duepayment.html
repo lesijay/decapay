@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}
+- login
+{% endblock %}
+{% block main %}
+
+<div class="parentdiv">
+  <div class="div1">
+
+  </div>
+  <div class="tbl">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Payment Due Date</th>
+          <th scope="col">Balance</th>
+          <th scope="col">Payment</th>
+          <th scope="col">Date Paid</th>
+          <th scope="col">Mode of Payment</th>
+          <th scope="col">Upload Proof</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>09/07/2019</td>
+          <td>3000000</td>
+          <td>100000</td>
+          <td><input type="date" name="datepaid"></td>
+          <td>
+            <select>
+              <option selected>Choose...</option>
+              <option value="banktransfer">Bank Transfer</option>
+              <option value="bankteller">Bank Teller</option>
+              <option value="cash">Cash</option>
+              <option value="cheque">Cheque</option>
+            </select></td>
+          <td><input type="file"></td>
+          <td><button type="button" class="btn btn-dark">Paid</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+{% endblock %}
