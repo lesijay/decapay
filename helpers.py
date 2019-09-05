@@ -19,7 +19,7 @@ def login_required(f):
     return decorated_function
 
 def location():
-    """Look up quote for symbol."""
+    """Look up for locations in Nigeria."""
 
 # Contact API
     try:
@@ -30,8 +30,8 @@ def location():
 
     # Parse response
     try:
-        quote = response.json()
-        return quote
+        location = response.json()
+        return location
     except (KeyError, TypeError, ValueError):
         return None
 
