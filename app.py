@@ -96,7 +96,8 @@ def create():
                 amountborrowed = request.form.get("amountborrowed")
                 interestRate = request.form.get("interestrate")
                 period = request.form.get("period")
-                print(loantype, amountborrowed, interestRate,period)
+                #print(loantype, amountborrowed, interestRate,period)
+
                 return render_template("/success.html")
         if request.method=="GET":
                 loantype = request.args.get("loantype")        
@@ -112,9 +113,9 @@ def create():
                 else:
                         return render_template("/profile.html")
 
-@app.route('/payment')
+@app.route('/history')
 def payment():
-    return render_template("duepayment.html")
+    return render_template("paymenthistory.html")
 
 @app.route('/duepayment')
 def duepayment():
