@@ -3,6 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 # from flask_session import Session
 from helpers import location
 from cs50 import SQL
+from helpers import naira
 
 app = Flask(__name__)
 
@@ -22,8 +23,8 @@ db = SQL("sqlite:///decapay.db")
 
 @app.route('/')
 def index():
-    k = db.execute("SELECT * FROM users ")    
-    print(k)
+    # k = db.execute("SELECT * FROM users ")    
+    # print(k)
     print("joel test")
     return render_template("index.html")
 
@@ -88,13 +89,40 @@ def register():
             # session["user_id"] = rows[0]["id"]
             return render_template("register.html", message ="You have successfully registered")
 
-@app.route('/create')
+@app.route('/create', methods=["GET", "POST"])
 def create():
-    return render_template("create.html")
-    
+        if request.method =="POST":
+                loantype = request.form.get("loantype")               
+                amountborrowed = request.form.get("amountborrowed")
+                interestRate = request.form.get("interestrate")
+                period = request.form.get("period")
+                print(loantype, amountborrowed, interestRate,period)
+                return render_template("/success.html")
+        if request.method=="GET":
+                loantype = request.args.get("loantype")        
+                if loantype == "Decamini":
+                        interestRate = 0.03
+                        return render_template("create.html",loantype=loantype, mini=100000, max=300000, interestRate=interestRate)
+                elif loantype == "Decaflex":
+                        interestRate = 0.05
+                        return render_template("create.html",loantype=loantype, mini=310000, max=900000, interestRate=interestRate)
+                elif loantype == "Decalarge":
+                        interestRate = 0.10
+                        return render_template("create.html",loantype=loantype, mini=910000, max=2000000, interestRate=interestRate)
+                else:
+                        return render_template("/profile.html")
+
 @app.route('/payment')
 def payment():
     return render_template("duepayment.html")
+
+@app.route('/duepayment')
+def duepayment():
+    return render_template("duepayment.html")
+
+@app.route('/success')
+def success():
+    return render_template("success.html")
 
 @app.route('/profile')
 def profile():
