@@ -37,8 +37,8 @@ def check():
     """Return true if username available, else false, in JSON format"""
     q = request.args.get("q")
     rows = db.execute("SELECT * FROM users WHERE username = :username", username= q)
-    print(rows)
-    print(q)
+    # print(rows)
+    # print(q)
     if (rows):
         return jsonify(message = "True")
     return jsonify(message = "False")
