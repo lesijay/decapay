@@ -87,7 +87,7 @@ def register():
 
             # Remember which user has logged in
             # session["user_id"] = rows[0]["id"]
-            return render_template("register.html", message ="You have successfully registered")
+            return render_template("profile.html", message ="You have successfully registered")
 
 @app.route('/create', methods=["GET", "POST"])
 def create():
