@@ -7,15 +7,20 @@
 <div class="parentdiv">
   <div class="div1">
   </div>
+  {% if message_error %}
+  <div class="alert alert-danger" role="alert">
+      <p>{{ message_error }} </p>
+  </div>
+  {% endif %}
   <div class="form-container mt-5">
-    <form class="login-form" action="/create">
+    <form class="login-form" action="/login" method="post">
       <p class="heading">Log In</p>
       <div class="form-group">
-        <input type="email" class="form-control form-inpt inpt" id="exampleInputEmail1" aria-describedby="emailHelp"
+        <input type="text" name = "username" class="form-control form-inpt inpt" id="exampleInputEmail1" aria-describedby="emailHelp"
           placeholder="Enter" />
       </div>
       <div class="form-group">
-        <input type="password" class="form-control form-inpt inpt" id="exampleInputPassword1" placeholder="Password" />
+        <input type="password" name ="password" class="form-control form-inpt inpt" id="exampleInputPassword1" placeholder="Password" />
       </div>
       <button type="submit" class="btn btn-primary form-control form-inpt loginbtn">
         Log In
