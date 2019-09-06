@@ -9,13 +9,22 @@
 <div class="div1">
 </div>
 <div id="wrapper2" class="jumbotron col-md-12" style="padding: 0;">
-        {% if message %}
-        <div class="alert alert-success" role="alert">
-            <p>{{ message }} </p>
-        </div>
-        {% endif %}
+
 
     <section id="form-container" class="jumbotron mt-5 col-md-7 shadow" style="padding: 20px;">
+        {% if message %}
+            {% if message[1]  != " " %}
+    
+<div class="alert alert-danger" style="margin: 0 auto; text-align: center" role="alert">
+         <p>{{ message[1]}} </p>
+</div>
+            {% elif message[0] != " " %}
+<div class="alert alert-success" style="margin: 0 auto; text-align: center" role="alert">
+        <p>{{ message[0]}} </p>
+</div>
+            {% endif %}
+
+         {% endif %}
 
         <h3>Sign up</h3>
         <form action="/register" method="post" id="form">

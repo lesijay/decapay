@@ -1,5 +1,7 @@
+import os
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_mail import Mail, Message
 # from flask_session import Session
 from helpers import location
 from cs50 import SQL
@@ -7,6 +9,22 @@ from helpers import naira
 
 app = Flask(__name__)
 
+app.config["MAIL_SERVER"] = 'smtp.gmail.com'
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USE_SSL"] =  False
+# app.config["MAIL_DEBUG"] = True`
+app.config["MAIL_USERNAME"] = 'darotudeen@gmail.com'
+app.config["MAIL_PASSWORD"] =  'Youngster1'
+app.config["MAIL_DEFAULT_SENDER"] = 'darotudeen@gmail.com'
+app.config["MAIL_MAX_EMAILS"] = None
+# app.config["MAIL_SUPPRESS_SEND"] = False
+app.config["MAIL_ASCII_ATTACHMENTS"] = False
+
+mail = Mail(app)
+
+# app.config['SESSION_TYPE'] = 'memcached'
+app.secret_key = os.urandom(24)
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
@@ -28,8 +46,42 @@ def index():
     print("joel test")
     return render_template("index.html")
 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
+
+    """Log user in"""
+
+    # Forget any user_id
+    session.clear()
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # Ensure username was submitted
+        if not request.form.get("username"):
+            return render_template('login.html', message_error = "must provide username")
+
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            return render_template('login.html', message_error= "must provide password")
+
+        # Query database for username
+        rows = db.execute("SELECT * FROM users WHERE username = :username",
+                          username=request.form.get("username"))
+
+        # Ensure username exists and password is correct
+        if len(rows) != 1 or not check_password_hash(rows[0]["password"], request.form.get("password")):
+            return render_template('login.html', message_error = "invalid username and/or password")
+
+        # Remember which user has logged in
+        session["user_id"] = rows[0]["id"]
+
+        # Redirect user to home page
+        return render_template("profile.html", message = "You have successfully logged in")
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("login.html")
     return render_template("login.html")
 
 @app.route("/check", methods=["GET"])
@@ -66,17 +118,17 @@ def register():
 
         #check username
         if not username:
-            return render_template ('register.html',  message = "You must provide a username")
-        #check password
+                return render_template ('register.html',  message = [" ", "You must provide a username"])
+            #check password
         elif not password:
-            return render_template('register.html', message = "Password not provided")
-        #check if passwords match
+                return render_template('register.html', message = [" ", "Password not provided"])
+            #check if passwords match
         elif password != confirmation:
-           return render_template('register.html',  message = "Passwords do no match")
+                return render_template('register.html',  message = [" ", "Passwords do no match"])
 
-        #confirm username has not been taken
+            #confirm username has not been taken
         elif (rows):
-            return render_template('register.html', message = "Username has been taken")
+                return render_template('register.html', message = [" ", "Username has been taken"])
         #With all conditions met Insert user into database
         else:
             db.execute("INSERT INTO users(first, last, username, phone, email, password, address,  state, city,  gender) VALUES(:first, :last, :username, :phone, :email, :password, :address,  :state, :city,  :gender)", 
@@ -86,8 +138,10 @@ def register():
                           username=username)
 
             # Remember which user has logged in
-            # session["user_id"] = rows[0]["id"]
-            return render_template("register.html", message ="You have successfully registered")
+            # session["username"] = username
+            msg = Message("You have successfully registered on Decapay", recipients=[email])
+    
+            return render_template("register.html", message = ["You have successfully registered", " "] )
 
 @app.route('/create', methods=["GET", "POST"])
 def create():
@@ -128,6 +182,7 @@ def success():
 def profile():
     return render_template("profile.html")
 
-# if __name__ == "__main__":
+# if __name__ == '__main__':
+#     app.debug = True
 #     app.run()
 
