@@ -74,7 +74,9 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # Redirect user to home page
-        return render_template("profile.html", message = "You have successfully logged in")
+        userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
+        return render_template("profile.html", message = "You have successfully logged in", userName=userDetails[0]["username"])
+        
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -132,8 +134,10 @@ def register():
             rows = db.execute("SELECT * FROM users WHERE username = :username",
                           username=username)
             msg = Message("You have successfully registered on Decapay", recipients=[email])
-    
-            return render_template("profile.html", message ="You have successfully registered")
+
+            userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
+            return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
+            
 
 @app.route('/create', methods=["GET", "POST"])
 def create():    
@@ -144,7 +148,6 @@ def create():
                 amountborrowed = int(request.form.get("amountborrowed"))
                 interestRate = float(request.form.get("interestrate"))
                 period = int(request.form.get("period"))
-                # print(loantype, amountborrowed, interestRate,period)
                 totalInterest = amountborrowed * interestRate
                 totalCostOfLoan = amountborrowed + totalInterest
                 monthlyPayment = totalCostOfLoan / period
@@ -165,8 +168,10 @@ def create():
                 elif loantype == "Decalarge":
                         interestRate = 0.10
                         return render_template("create.html",loantype=loantype, mini=910000, max=2000000, interestRate=interestRate)
-                else:
-                        return render_template("/profile.html", message ="You have successfully registered")
+                else:                       
+                        userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
+                        return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
+            
 
 @app.route('/history')
 def payment():
@@ -183,11 +188,11 @@ def success():
 
 @app.route('/profile')
 def profile():
-    # session["user_id"]
     if session.get("user_id") is None:
         return render_template("notfound.html", details="Login Is Required")
     else:
-        return render_template("profile.html")
+        userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
+        return render_template("profile.html", userName=userDetails[0]["username"])
 
     
 
