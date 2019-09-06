@@ -136,13 +136,8 @@ def register():
 
             rows = db.execute("SELECT * FROM users WHERE username = :username",
                           username=username)
-
-            # Remember which user has logged in
-            # session["username"] = username
             msg = Message("You have successfully registered on Decapay", recipients=[email])
     
-            # return render_template("register.html", message = ["You have successfully registered", " "] )
-            # session["user_id"] = rows[0]["id"]
             return render_template("profile.html", message ="You have successfully registered")
 
 @app.route('/create', methods=["GET", "POST"])
@@ -157,10 +152,10 @@ def create():
                 totalCostOfLoan = amountborrowed + totalInterest
                 monthlyPayment = totalCostOfLoan / period
                 monthlyInterest = totalInterest / period
-                monthlyPrincipal = monthlyPayment - monthlyInterest
-                db.execute("INSERT INTO LoanTable(Loantype, LoanAmount, interestRate, LoanPeriod, MonthlyRepayment, TotalInterest,  TotalCostofLoan) VALUES(:Loantype, :LoanAmount, :interestRate, :LoanPeriod, :MonthlyRepayment, :TotalInterest,  :TotalCostofLoan)",
-                Loantype = loantype, LoanAmount = naira(amountborrowed), interestRate = interestRate, LoanPeriod = period, MonthlyRepayment = naira(monthlyPayment), TotalInterest = naira(totalInterest),  TotalCostofLoan= naira(totalCostOfLoan)) 
-
+                monthlyPrincipal = monthlyPayment - monthlyInterest               
+                k = db.execute("INSERT INTO loans (userId, loanType, loanAmount, interestRate, loanPeriod, monthlyRepayment, totalInterest,  totalCostOfLoan) VALUES(:userId, :loanType, :loanAmount, :interestRate, :loanPeriod, :monthlyRepayment, :totalInterest,  :totalCostOfLoan)",
+                userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = naira(monthlyPayment), totalInterest = naira(totalInterest),  totalCostOfLoan= naira(totalCostOfLoan)) 
+                
                 return render_template("/success.html")
         if request.method=="GET":
                 loantype = request.args.get("loantype")        
