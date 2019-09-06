@@ -41,9 +41,6 @@ db = SQL("sqlite:///decapay.db")
 
 @app.route('/')
 def index():
-    # k = db.execute("SELECT * FROM users ")    
-    # print(k)
-    print("joel test")
     return render_template("index.html")
 
 @app.route('/login', methods=["GET", "POST"])
@@ -89,8 +86,6 @@ def check():
     """Return true if username available, else false, in JSON format"""
     q = request.args.get("q")
     rows = db.execute("SELECT * FROM users WHERE username = :username", username= q)
-    # print(rows)
-    # print(q)
     if (rows):
         return jsonify(message = "True")
     return jsonify(message = "False")
@@ -141,8 +136,10 @@ def register():
             return render_template("profile.html", message ="You have successfully registered")
 
 @app.route('/create', methods=["GET", "POST"])
-def create():
-        if request.method =="POST":
+def create():    
+    if session.get("user_id") is None:
+        return render_template("notfound.html", details="Login Is Required")
+    elif request.method =="POST":
                 loantype = request.form.get("loantype")               
                 amountborrowed = int(request.form.get("amountborrowed"))
                 interestRate = float(request.form.get("interestrate"))
@@ -157,7 +154,7 @@ def create():
                 userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = naira(monthlyPayment), totalInterest = naira(totalInterest),  totalCostOfLoan= naira(totalCostOfLoan)) 
                 
                 return render_template("/success.html")
-        if request.method=="GET":
+    elif request.method=="GET":
                 loantype = request.args.get("loantype")        
                 if loantype == "Decamini":
                         interestRate = 0.03
@@ -186,9 +183,11 @@ def success():
 
 @app.route('/profile')
 def profile():
-    return render_template("profile.html")
+    # session["user_id"]
+    if session.get("user_id") is None:
+        return render_template("notfound.html", details="Login Is Required")
+    else:
+        return render_template("profile.html")
 
-# if __name__ == '__main__':
-#     app.debug = True
-#     app.run()
+    
 
