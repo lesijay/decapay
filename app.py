@@ -93,10 +93,17 @@ def register():
 def create():
         if request.method =="POST":
                 loantype = request.form.get("loantype")               
-                amountborrowed = request.form.get("amountborrowed")
-                interestRate = request.form.get("interestrate")
-                period = request.form.get("period")
-                #print(loantype, amountborrowed, interestRate,period)
+                amountborrowed = int(request.form.get("amountborrowed"))
+                interestRate = float(request.form.get("interestrate"))
+                period = int(request.form.get("period"))
+                # print(loantype, amountborrowed, interestRate,period)
+                totalInterest = amountborrowed * interestRate
+                totalCostOfLoan = amountborrowed + totalInterest
+                monthlyPayment = totalCostOfLoan / period
+                monthlyInterest = totalInterest / period
+                monthlyPrincipal = monthlyPayment - monthlyInterest
+                db.execute("INSERT INTO LoanTable(Loantype, LoanAmount, interestRate, LoanPeriod, MonthlyRepayment, TotalInterest,  TotalCostofLoan) VALUES(:Loantype, :LoanAmount, :interestRate, :LoanPeriod, :MonthlyRepayment, :TotalInterest,  :TotalCostofLoan)",
+                Loantype = loantype, LoanAmount = naira(amountborrowed), interestRate = interestRate, LoanPeriod = period, MonthlyRepayment = naira(monthlyPayment), TotalInterest = naira(totalInterest),  TotalCostofLoan= naira(totalCostOfLoan)) 
 
                 return render_template("/success.html")
         if request.method=="GET":
@@ -111,7 +118,7 @@ def create():
                         interestRate = 0.10
                         return render_template("create.html",loantype=loantype, mini=910000, max=2000000, interestRate=interestRate)
                 else:
-                        return render_template("/profile.html")
+                        return render_template("/profile.html", message ="You have successfully registered")
 
 @app.route('/history')
 def payment():
@@ -119,6 +126,7 @@ def payment():
 
 @app.route('/duepayment')
 def duepayment():
+
     return render_template("duepayment.html")
 
 @app.route('/success')
