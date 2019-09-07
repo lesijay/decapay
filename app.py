@@ -149,6 +149,7 @@ def register():
             
 
 @app.route('/create', methods=["GET", "POST"])
+@login_required
 def create():    
     if session.get("user_id") is None:
         return render_template("notfound.html", details="Login Is Required")
@@ -167,11 +168,9 @@ def create():
                 userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = naira(monthlyPayment), totalInterest = naira(totalInterest),  totalCostOfLoan= naira(totalCostOfLoan), startdate = startdate) 
                 return render_template("/success.html")
     elif request.method=="GET":
-        userLoans = db.execute("SELECT * FROM loans WHERE id = :user_id",
-                          user_id = session["user_id"])
-        print(userLoans)
+        userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
+        # print(userLoans)
         if not userLoans:
-        
             loantype = request.args.get("loantype")        
             if loantype == "Decamini":
                     interestRate = 0.03
@@ -185,15 +184,18 @@ def create():
             else:                       
                     userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
                     return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
-                
+        else:
+            return render_template("noteligible.html", details="Please Pay up before making another application")       
 
 @app.route('/history')
+@login_required
 def history():
-    userLoans = db.execute('SELECT * FROM loans WHERE id = :userId', userId= session["user_id"])
+    userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
     print(userLoans)
     return render_template("paymenthistory.html",userLoans = userLoans)
 
 @app.route('/duepayment')
+@login_required
 def duepayment():
     return render_template("duepayment.html")
 
@@ -202,6 +204,7 @@ def success():
     return render_template("success.html")
 
 @app.route('/profile')
+@login_required
 def profile():
     if session.get("user_id") is None:
         return render_template("notfound.html", details="Login Is Required")
