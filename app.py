@@ -44,6 +44,9 @@ db = SQL("sqlite:///decapay.db")
 
 @app.route('/')
 def index():
+     # Forget any user_id
+    session.clear()
+
     return render_template("index.html")
 
 @app.route('/login', methods=["GET", "POST"])
@@ -164,20 +167,25 @@ def create():
                 userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = naira(monthlyPayment), totalInterest = naira(totalInterest),  totalCostOfLoan= naira(totalCostOfLoan), startdate = startdate) 
                 return render_template("/success.html")
     elif request.method=="GET":
-                loantype = request.args.get("loantype")        
-                if loantype == "Decamini":
-                        interestRate = 0.03
-                        return render_template("create.html",loantype=loantype, mini=100000, max=300000, interestRate=interestRate)
-                elif loantype == "Decaflex":
-                        interestRate = 0.05
-                        return render_template("create.html",loantype=loantype, mini=310000, max=900000, interestRate=interestRate)
-                elif loantype == "Decalarge":
-                        interestRate = 0.10
-                        return render_template("create.html",loantype=loantype, mini=910000, max=2000000, interestRate=interestRate)
-                else:                       
-                        userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
-                        return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
-            
+        userLoans = db.execute("SELECT * FROM loans WHERE id = :user_id",
+                          user_id = session["user_id"])
+        print(userLoans)
+        if not userLoans:
+        
+            loantype = request.args.get("loantype")        
+            if loantype == "Decamini":
+                    interestRate = 0.03
+                    return render_template("create.html",loantype=loantype, mini=100000, max=300000, interestRate=interestRate)
+            elif loantype == "Decaflex":
+                    interestRate = 0.05
+                    return render_template("create.html",loantype=loantype, mini=310000, max=900000, interestRate=interestRate)
+            elif loantype == "Decalarge":
+                    interestRate = 0.10
+                    return render_template("create.html",loantype=loantype, mini=910000, max=2000000, interestRate=interestRate)
+            else:                       
+                    userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
+                    return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
+                
 
 @app.route('/history')
 def history():
