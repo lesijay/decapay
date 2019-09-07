@@ -6,6 +6,9 @@ from flask_mail import Mail, Message
 from helpers import location
 from cs50 import SQL
 from helpers import naira
+import datetime
+
+
 
 app = Flask(__name__)
 
@@ -147,6 +150,7 @@ def create():
     if session.get("user_id") is None:
         return render_template("notfound.html", details="Login Is Required")
     elif request.method =="POST":
+                startdate = datetime.datetime.now()
                 loantype = request.form.get("loantype")               
                 amountborrowed = int(request.form.get("amountborrowed"))
                 interestRate = float(request.form.get("interestrate"))
@@ -156,9 +160,8 @@ def create():
                 monthlyPayment = totalCostOfLoan / period
                 monthlyInterest = totalInterest / period
                 monthlyPrincipal = monthlyPayment - monthlyInterest               
-                k = db.execute("INSERT INTO loans (userId, loanType, loanAmount, interestRate, loanPeriod, monthlyRepayment, totalInterest,  totalCostOfLoan) VALUES(:userId, :loanType, :loanAmount, :interestRate, :loanPeriod, :monthlyRepayment, :totalInterest,  :totalCostOfLoan)",
-                userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = naira(monthlyPayment), totalInterest = naira(totalInterest),  totalCostOfLoan= naira(totalCostOfLoan)) 
-                
+                k = db.execute("INSERT INTO loans (userId, loanType, loanAmount, interestRate, loanPeriod, monthlyRepayment, totalInterest,  totalCostOfLoan, startdate) VALUES(:userId, :loanType, :loanAmount, :interestRate, :loanPeriod, :monthlyRepayment, :totalInterest,  :totalCostOfLoan, :startdate)",
+                userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = naira(monthlyPayment), totalInterest = naira(totalInterest),  totalCostOfLoan= naira(totalCostOfLoan), startdate = startdate) 
                 return render_template("/success.html")
     elif request.method=="GET":
                 loantype = request.args.get("loantype")        
@@ -179,7 +182,8 @@ def create():
 @app.route('/history')
 def payment():
     userLoans = db.execute('SELECT * FROM loans WHERE id = :userId', userId= session["user_id"])
-    print(userLoans)
+    print("lesi")
+    print(userLoans[0]["startdate"])
     return render_template("paymenthistory.html",userLoans=userLoans)
 
 @app.route('/duepayment')
