@@ -182,7 +182,7 @@ def create():
 @app.route('/history')
 def payment():
     userLoans = db.execute('SELECT * FROM loans WHERE id = :userId', userId= session["user_id"])
-    # print(userLoans[0]["startdate"])
+    print(userLoans[0]["startdate"])
     return render_template("paymenthistory.html",userLoans=userLoans)
 
 @app.route('/duepayment')
