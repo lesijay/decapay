@@ -1,17 +1,19 @@
 {% extends "layout.html" %}
 
 {% block title %}
-- success
+- 404
 {% endblock %}
 {% block main %}
 <div class="parentdiv">
   <div class="div1">
   </div>
   <div class="form-container mt-5">
-    <form class="login-form" action="/history">
-      <p class="heading">Your application is successful</p>
+    <form class="login-form" style='text-align:center;' action="/history">
+        <span style='font-size:100px;'>&#128557;</span>
+      <p class="heading">Not Eligilble </p>
+      <p class="heading">{{details}} </p>
       <button type="submit" class="btn btn-primary form-control form-inpt loginbtn">
-            <a class="nregistered" href="/history">view loan details</a>
+            <a class="nregistered" href="/history">View Loan Details</a>
           </button>
      
       </div>

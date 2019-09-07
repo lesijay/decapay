@@ -13,19 +13,19 @@ block main %}
               <tbody>
                 <tr>
                   <td>Loan Amount</td>
-                  <td>{{ Loan_details[0]["LoanAmount"] }}</td>
+                  <td>{{ userLoans[0]["loanAmount"] }}</td>
                 </tr>
                 <tr>
-                  <td>Annual Interest Rate</td>
-                  <td>30%</td>
+                  <td>Interest Rate</td>
+                  <td>{{ userLoans[0]["interestRate"] }}</td>
                 </tr>
                 <tr>
                   <td>Loan Period in years</td>
-                  <td>3</td>
+                  <td>{{ userLoans[0]["loanPeriod"] }}</td>
                 </tr>
                 <tr>
                   <td>Start date of Loan</td>
-                  <td>9th October, 2019</td>
+                  <td>{{ userLoans[0]["startdate"] }}</td>
                 </tr>
               </tbody>
             </table>
@@ -39,20 +39,20 @@ block main %}
             <table class="table table-sm">
               <tbody>
                 <tr>
-                  <td>Monthly Pyment</td>
-                  <td>111930.09</td>
+                  <td>Monthly Payment</td>
+                  <td>{{ payment }}</td>
                 </tr>
                 <tr>
                   <td>No of Payments</td>
-                  <td>2</td>
+                  <td>{{ userLoans[0]["loanPeriod"] }}</td>
                 </tr>
                 <tr>
                   <td>Total Interest</td>
-                  <td>1000000</td>
+                  <td>{{ userLoans[0]["totalInterest"] }}</td>
                 </tr>
                 <tr>
                   <td>Total Cost of Loan</td>
-                  <td>4000000</td>
+                  <td>{{ tbalance }}</td>
                 </tr>
               </tbody>
             </table>

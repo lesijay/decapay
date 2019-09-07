@@ -5,7 +5,12 @@ from flask_mail import Mail, Message
 # from flask_session import Session
 from helpers import location
 from cs50 import SQL
-from helpers import naira
+from helpers import naira, login_required
+import datetime
+from dateutil.relativedelta import relativedelta
+
+
+
 
 app = Flask(__name__)
 
@@ -41,6 +46,9 @@ db = SQL("sqlite:///decapay.db")
 
 @app.route('/')
 def index():
+     # Forget any user_id
+    session.clear()
+
     return render_template("index.html")
 
 @app.route('/login', methods=["GET", "POST"])
@@ -72,6 +80,9 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
+        # print("MEEEE")
+        # print(session["user_id"])
+        
 
         # Redirect user to home page
         userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
@@ -140,10 +151,12 @@ def register():
             
 
 @app.route('/create', methods=["GET", "POST"])
+@login_required
 def create():    
     if session.get("user_id") is None:
         return render_template("notfound.html", details="Login Is Required")
     elif request.method =="POST":
+                startdate = datetime.datetime.now()
                 loantype = request.form.get("loantype")               
                 amountborrowed = int(request.form.get("amountborrowed"))
                 interestRate = float(request.form.get("interestrate"))
@@ -152,41 +165,73 @@ def create():
                 totalCostOfLoan = amountborrowed + totalInterest
                 monthlyPayment = totalCostOfLoan / period
                 monthlyInterest = totalInterest / period
-                monthlyPrincipal = monthlyPayment - monthlyInterest               
-                k = db.execute("INSERT INTO loans (userId, loanType, loanAmount, interestRate, loanPeriod, monthlyRepayment, totalInterest,  totalCostOfLoan) VALUES(:userId, :loanType, :loanAmount, :interestRate, :loanPeriod, :monthlyRepayment, :totalInterest,  :totalCostOfLoan)",
-                userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = naira(monthlyPayment), totalInterest = naira(totalInterest),  totalCostOfLoan= naira(totalCostOfLoan)) 
-                
+                monthlyPrincipal = monthlyPayment - monthlyInterest  
+               
+                # insert loan details into loan table             
+                k = db.execute("INSERT INTO loans (userId, loanType, loanAmount, interestRate, loanPeriod, monthlyRepayment, totalInterest,  totalCostOfLoan, startdate) VALUES(:userId, :loanType, :loanAmount, :interestRate, :loanPeriod, :monthlyRepayment, :totalInterest,  :totalCostOfLoan, :startdate)",
+                userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = monthlyPayment, totalInterest = naira(totalInterest),  totalCostOfLoan= totalCostOfLoan, startdate = startdate) 
                 return render_template("/success.html")
     elif request.method=="GET":
-                loantype = request.args.get("loantype")        
-                if loantype == "Decamini":
-                        interestRate = 0.03
-                        return render_template("create.html",loantype=loantype, mini=100000, max=300000, interestRate=interestRate)
-                elif loantype == "Decaflex":
-                        interestRate = 0.05
-                        return render_template("create.html",loantype=loantype, mini=310000, max=900000, interestRate=interestRate)
-                elif loantype == "Decalarge":
-                        interestRate = 0.10
-                        return render_template("create.html",loantype=loantype, mini=910000, max=2000000, interestRate=interestRate)
-                else:                       
-                        userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
-                        return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
-            
+        userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
+        # print(userLoans)
+        if not userLoans:
+            loantype = request.args.get("loantype")        
+            if loantype == "Decamini":
+                    interestRate = 0.03
+                    return render_template("create.html",loantype=loantype, mini=100000, max=300000, interestRate=interestRate)
+            elif loantype == "Decaflex":
+                    interestRate = 0.05
+                    return render_template("create.html",loantype=loantype, mini=310000, max=900000, interestRate=interestRate)
+            elif loantype == "Decalarge":
+                    interestRate = 0.10
+                    return render_template("create.html",loantype=loantype, mini=910000, max=2000000, interestRate=interestRate)
+            else:                       
+                    userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
+                    return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
+        else:
+            return render_template("noteligible.html", details="Please Pay up before making another application")       
 
 @app.route('/history')
-def payment():
-    return render_template("paymenthistory.html")
+@login_required
+def history():
+    userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
+    payment = naira(float(userLoans[0]["monthlyRepayment"]))
+    tbalance = naira(userLoans[0]["totalCostOfLoan"])
+    # print(userLoans)
+
+    return render_template("paymenthistory.html",userLoans = userLoans,payment = payment, tbalance =tbalance)
 
 @app.route('/duepayment')
+@login_required
 def duepayment():
-
-    return render_template("duepayment.html")
+    if request.method == "GET":
+        startdate = datetime.datetime.now()
+        userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
+        date = (startdate + relativedelta(months=+1)).strftime("%x")
+        period = userLoans[0]["loanPeriod"]
+        userLoans[0]["totalInterest"]
+        payment = float(userLoans[0]["monthlyRepayment"])
+        rate = userLoans[0]["interestRate"]
+        tbalance = userLoans[0]["totalCostOfLoan"]
+        print(tbalance)
+        balances = []
+        dates =[]
+        print(period)
+        print(payment)
+        for x in range(period):
+            date = (startdate + relativedelta(months=+x)).strftime("%x")
+            balance = tbalance - (x * payment)
+            balance = naira(balance)
+            balances.append(balance)
+            dates.append(date)
+        return render_template("duepayment.html",userLoans = userLoans, dates = dates,balances = balances,period = period)
 
 @app.route('/success')
 def success():
     return render_template("success.html")
 
 @app.route('/profile')
+@login_required
 def profile():
     if session.get("user_id") is None:
         return render_template("notfound.html", details="Login Is Required")
@@ -194,5 +239,14 @@ def profile():
         userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
         return render_template("profile.html", userName=userDetails[0]["username"])
 
-    
+@app.route("/logout")
+def logout():
+    """Log user out"""
+
+    # Forget any user_id
+    session.clear()
+    flash('You have successfully logged out')
+    # Redirect user to login form
+    return redirect("/login")
+
 
