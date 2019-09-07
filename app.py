@@ -5,7 +5,7 @@ from flask_mail import Mail, Message
 # from flask_session import Session
 from helpers import location
 from cs50 import SQL
-from helpers import naira
+from helpers import naira, login_required
 import datetime
 
 
@@ -180,14 +180,13 @@ def create():
             
 
 @app.route('/history')
-def payment():
+def history():
     userLoans = db.execute('SELECT * FROM loans WHERE id = :userId', userId= session["user_id"])
-    print(userLoans[0]["startdate"])
-    return render_template("paymenthistory.html",userLoans=userLoans)
+    print(userLoans)
+    return render_template("paymenthistory.html",userLoans = userLoans)
 
 @app.route('/duepayment')
 def duepayment():
-
     return render_template("duepayment.html")
 
 @app.route('/success')
@@ -202,5 +201,14 @@ def profile():
         userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
         return render_template("profile.html", userName=userDetails[0]["username"])
 
-    
+@app.route("/logout")
+def logout():
+    """Log user out"""
+
+    # Forget any user_id
+    session.clear()
+    flash('You have successfully logged out')
+    # Redirect user to login form
+    return redirect("/login")
+
 
