@@ -7,6 +7,8 @@ from helpers import location
 from cs50 import SQL
 from helpers import naira, login_required
 import datetime
+from dateutil.relativedelta import relativedelta
+
 
 
 
@@ -191,13 +193,17 @@ def create():
 @login_required
 def history():
     userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
-    print(userLoans)
+    # print(userLoans)
     return render_template("paymenthistory.html",userLoans = userLoans)
 
 @app.route('/duepayment')
 @login_required
 def duepayment():
-    return render_template("duepayment.html")
+    startdate = datetime.datetime.now()
+    userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
+    date = startdate + relativedelta(months=+1)
+    date = date.strftime("%x")
+    return render_template("duepayment.html",userLoans = userLoans, date = date)
 
 @app.route('/success')
 def success():
