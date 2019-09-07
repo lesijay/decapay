@@ -22,9 +22,10 @@
         </tr>
       </thead>
       <tbody>
+        {% for x in range(period) %}
         <tr>
-          <td>{{ date }}</td>
-          <td>{{ userLoans[0]["loanAmount"] }}</td>
+          <td>{{ dates[x] }}</td>
+          <td>{{ balances[x] }}</td>
           <td>{{ userLoans[0]["monthlyRepayment"] }}</td>
           <td><input type="date" name="datepaid"></td>
           <td>
@@ -38,6 +39,12 @@
           <td><input type="file"></td>
           <td><button type="button" class="btn btn-dark">Paid</button></td>
         </tr>
+        {% endfor %}
+        <tr>
+          <td></td>
+          <td>₦0.00</td>
+        </tr>
+        </tbody>
       </tbody>
     </table>
   </div>

@@ -165,9 +165,11 @@ def create():
                 totalCostOfLoan = amountborrowed + totalInterest
                 monthlyPayment = totalCostOfLoan / period
                 monthlyInterest = totalInterest / period
-                monthlyPrincipal = monthlyPayment - monthlyInterest               
+                monthlyPrincipal = monthlyPayment - monthlyInterest  
+               
+                # insert loan details into loan table             
                 k = db.execute("INSERT INTO loans (userId, loanType, loanAmount, interestRate, loanPeriod, monthlyRepayment, totalInterest,  totalCostOfLoan, startdate) VALUES(:userId, :loanType, :loanAmount, :interestRate, :loanPeriod, :monthlyRepayment, :totalInterest,  :totalCostOfLoan, :startdate)",
-                userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = naira(monthlyPayment), totalInterest = naira(totalInterest),  totalCostOfLoan= naira(totalCostOfLoan), startdate = startdate) 
+                userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = monthlyPayment, totalInterest = naira(totalInterest),  totalCostOfLoan= totalCostOfLoan, startdate = startdate) 
                 return render_template("/success.html")
     elif request.method=="GET":
         userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
@@ -193,17 +195,36 @@ def create():
 @login_required
 def history():
     userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
+    payment = naira(float(userLoans[0]["monthlyRepayment"]))
+    tbalance = naira(userLoans[0]["totalCostOfLoan"])
     # print(userLoans)
-    return render_template("paymenthistory.html",userLoans = userLoans)
+
+    return render_template("paymenthistory.html",userLoans = userLoans,payment = payment, tbalance =tbalance)
 
 @app.route('/duepayment')
 @login_required
 def duepayment():
-    startdate = datetime.datetime.now()
-    userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
-    date = startdate + relativedelta(months=+1)
-    date = date.strftime("%x")
-    return render_template("duepayment.html",userLoans = userLoans, date = date)
+    if request.method == "GET":
+        startdate = datetime.datetime.now()
+        userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
+        date = (startdate + relativedelta(months=+1)).strftime("%x")
+        period = userLoans[0]["loanPeriod"]
+        userLoans[0]["totalInterest"]
+        payment = float(userLoans[0]["monthlyRepayment"])
+        rate = userLoans[0]["interestRate"]
+        tbalance = userLoans[0]["totalCostOfLoan"]
+        print(tbalance)
+        balances = []
+        dates =[]
+        print(period)
+        print(payment)
+        for x in range(period):
+            date = (startdate + relativedelta(months=+x)).strftime("%x")
+            balance = tbalance - (x * payment)
+            balance = naira(balance)
+            balances.append(balance)
+            dates.append(date)
+        return render_template("duepayment.html",userLoans = userLoans, dates = dates,balances = balances,period = period)
 
 @app.route('/success')
 def success():
