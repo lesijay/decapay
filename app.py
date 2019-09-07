@@ -155,25 +155,10 @@ def create():
                 totalCostOfLoan = amountborrowed + totalInterest
                 monthlyPayment = totalCostOfLoan / period
                 monthlyInterest = totalInterest / period
-<<<<<<< HEAD
-                monthlyPrincipal = monthlyPayment - monthlyInterest
-                # loan = db.execute("INSERT INTO LoanTable(Loantype, user_id, LoanAmount, interestRate, LoanPeriod, MonthlyRepayment, TotalInterest, startDate, TotalCostofLoan) VALUES(:Loantype, :user_id,:LoanAmount, :interestRate, :LoanPeriod, :MonthlyRepayment, :TotalInterest, :startDate,:TotalCostofLoan)",
-                # Loantype = loantype, user_id= session["user_id"], LoanAmount = naira(amountborrowed), interestRate = interestRate, LoanPeriod = period, MonthlyRepayment = naira(monthlyPayment), TotalInterest = naira(totalInterest), startDate = "date", TotalCostofLoan= naira(totalCostOfLoan)) 
-               
-                # db.execute("INSERT INTO transactions (user_id, Action, Symbol, Name, Price, Shares, Total, Balance) VALUES(:user_id, :action, :Symbol, :Name, :Price, :Shares, :Total, :balance)", user_id = session["user_id"], action = "Buy", Symbol = quote['symbol'], Name = quote['name'], Price = quote['price'], Shares = no_of_shares, Total = cost, balance = current_balance)
-
-                # loans = db.execute("SELECT * FROM LoanTable")
-                # user_id = session["user_id"]
-                # print(session)
-                print("LESI")
-                print(loan)
-                print(session["user_id"])
-=======
                 monthlyPrincipal = monthlyPayment - monthlyInterest               
                 k = db.execute("INSERT INTO loans (userId, loanType, loanAmount, interestRate, loanPeriod, monthlyRepayment, totalInterest,  totalCostOfLoan) VALUES(:userId, :loanType, :loanAmount, :interestRate, :loanPeriod, :monthlyRepayment, :totalInterest,  :totalCostOfLoan)",
                 userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = naira(monthlyPayment), totalInterest = naira(totalInterest),  totalCostOfLoan= naira(totalCostOfLoan)) 
                 
->>>>>>> 48f04ddff01bcd3cbbae77bdd675c81783699c1f
                 return render_template("/success.html")
     elif request.method=="GET":
                 loantype = request.args.get("loantype")        
@@ -193,7 +178,9 @@ def create():
 
 @app.route('/history')
 def payment():
-    return render_template("paymenthistory.html")
+    userLoans = db.execute('SELECT * FROM loans WHERE id = :userId', userId= session["user_id"])
+    print(userLoans)
+    return render_template("paymenthistory.html",userLoans=userLoans)
 
 @app.route('/duepayment')
 def duepayment():
