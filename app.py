@@ -75,6 +75,9 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
+        # print("MEEEE")
+        # print(session["user_id"])
+        
 
         # Redirect user to home page
         return render_template("profile.html", message = "You have successfully logged in")
@@ -158,9 +161,17 @@ def create():
                 monthlyPayment = totalCostOfLoan / period
                 monthlyInterest = totalInterest / period
                 monthlyPrincipal = monthlyPayment - monthlyInterest
-                db.execute("INSERT INTO LoanTable(Loantype, LoanAmount, interestRate, LoanPeriod, MonthlyRepayment, TotalInterest,  TotalCostofLoan) VALUES(:Loantype, :LoanAmount, :interestRate, :LoanPeriod, :MonthlyRepayment, :TotalInterest,  :TotalCostofLoan)",
-                Loantype = loantype, LoanAmount = naira(amountborrowed), interestRate = interestRate, LoanPeriod = period, MonthlyRepayment = naira(monthlyPayment), TotalInterest = naira(totalInterest),  TotalCostofLoan= naira(totalCostOfLoan)) 
+                # loan = db.execute("INSERT INTO LoanTable(Loantype, user_id, LoanAmount, interestRate, LoanPeriod, MonthlyRepayment, TotalInterest, startDate, TotalCostofLoan) VALUES(:Loantype, :user_id,:LoanAmount, :interestRate, :LoanPeriod, :MonthlyRepayment, :TotalInterest, :startDate,:TotalCostofLoan)",
+                # Loantype = loantype, user_id= session["user_id"], LoanAmount = naira(amountborrowed), interestRate = interestRate, LoanPeriod = period, MonthlyRepayment = naira(monthlyPayment), TotalInterest = naira(totalInterest), startDate = "date", TotalCostofLoan= naira(totalCostOfLoan)) 
+               
+                # db.execute("INSERT INTO transactions (user_id, Action, Symbol, Name, Price, Shares, Total, Balance) VALUES(:user_id, :action, :Symbol, :Name, :Price, :Shares, :Total, :balance)", user_id = session["user_id"], action = "Buy", Symbol = quote['symbol'], Name = quote['name'], Price = quote['price'], Shares = no_of_shares, Total = cost, balance = current_balance)
 
+                # loans = db.execute("SELECT * FROM LoanTable")
+                # user_id = session["user_id"]
+                # print(session)
+                print("LESI")
+                print(loan)
+                print(session["user_id"])
                 return render_template("/success.html")
         if request.method=="GET":
                 loantype = request.args.get("loantype")        
