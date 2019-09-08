@@ -173,8 +173,8 @@ def create():
                 return render_template("/success.html")
     elif request.method=="GET":
         userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
-        # print(userLoans)
-        if not userLoans:
+        status = userLoans[0]["status"]
+        if not userLoans or status == "paid":
             loantype = request.args.get("loantype")        
             if loantype == "Decamini":
                     interestRate = 0.03
