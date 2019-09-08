@@ -23,13 +23,14 @@
       </thead>
       <tbody>
         {% for x in range(period) %}
+        <form action="/history" method="GET">
         <tr>
           <td>{{ dates[x] }}</td>
           <td>{{ balances[x] }}</td>
-          <td>{{ userLoans[0]["monthlyRepayment"] }}</td>
+          <td>{{ activeLoan[0]["monthlyRepayment"] }}</td>
           <td><input type="date" name="datepaid"></td>
           <td>
-            <select>
+            <select name = "paymentproof">
               <option selected>Choose...</option>
               <option value="banktransfer">Bank Transfer</option>
               <option value="bankteller">Bank Teller</option>
@@ -37,12 +38,13 @@
               <option value="cheque">Cheque</option>
             </select></td>
           <td><input type="file"></td>
-          <td><button type="button" class="btn btn-dark">Paid</button></td>
+          <td><button class="btn btn-dark"><a href="/history?pmtnum={{x}}">Paid</a></button></td>
         </tr>
+       </form>
         {% endfor %}
         <tr>
           <td></td>
-          <td>₦0.00</td>
+          <td>0.00</td>
         </tr>
         </tbody>
       </tbody>
