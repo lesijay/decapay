@@ -116,7 +116,7 @@ def register():
         address = request.form.get('address')
         state = request.form.get('state')
         city = request.form.get('city')
-                # check for existing username
+        # check for existing username
         rows = db.execute("SELECT * FROM users WHERE username = :username",  username=request.form.get("username"))
         print(details)
 
@@ -141,19 +141,16 @@ def register():
         else:
             db.execute("INSERT INTO users(first, last, username, phone, email, password, address,  state, city,  gender) VALUES(:first, :last, :username, :phone, :email, :password, :address,  :state, :city,  :gender)", 
             first = first, last = last, username =username, phone=phone, email=email,  password = generate_password_hash(password), address = address,  state=state,  city = city, gender = gender)
-            server.sendmail("decapays@gmail.com", email, "Congratulation your account has been verified" )
 
             rows = db.execute("SELECT * FROM users WHERE username = :username",
-                            username=username)
+                          username=username)
             
 
-            session["username"] = username
-            
-
-            
-            userDetails = db.execute('SELECT * FROM users WHERE username = :username', username= session["username"])
-            print(userDetails)
-            return render_template("profile.html",message ="You have successfully registered", userName=username)   
+            server.sendmail("decapays@gmail.com", email, "Congratulation your account has been verified" )
+    
+            session["user_id"] = username
+            # userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
+            return render_template("profile.html",message ="You have successfully registered", userName=session["user_id"])   
             
 
 @app.route('/create', methods=["GET", "POST"])
