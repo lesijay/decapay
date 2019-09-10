@@ -30,7 +30,8 @@
         {% for x in range(period) %}
         <form action="/duepayment" method="POST">
         <tr>
-          <td>{{ dates[x] }}</td>
+          <td name="dates">{{ dates[x] }}</td>
+          <input type="hidden" name="dates" value="{{ dates[x] }}" />
           <td>{{ balances[x] }}</td>
           <td>{{ activeLoan[0]["monthlyRepayment"] }}</td>
           <td><input type="date" name="datepaid"></td>

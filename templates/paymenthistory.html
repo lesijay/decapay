@@ -76,7 +76,7 @@ block main %}
         </tr>
       </thead>
       <tbody>
-        {% for x in range(pmt) %}
+        <!-- {% for x in range(pmt) %}
         <tr>
           <td>{{ x + 1 }}</td>
           <td>{{ dates[x] }}</td>
@@ -86,6 +86,18 @@ block main %}
           <td>{{ interest }}</td>
           <td>{{ ending_balances[x] }}</td>
           <td>unconfirmed</td>
+        </tr>
+        {% endfor %}  -->
+        {% for x in userHistory %}
+        <tr>
+          <td>{{ x.loan_id }}</td>
+          <td>{{ x.due_date }}</td>
+          <td>{{ x.begining_balance }}</td>
+          <td>{{ x.monthly_payment }}</td>
+          <td>{{ x.principal }}</td>
+          <td>₦{{ x.interest }}</td>
+          <td>{{ x.ending_balance }}</td>
+          <td>{{ x.status }}</td>
         </tr>
         {% endfor %}
       </tbody>

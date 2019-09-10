@@ -267,27 +267,25 @@ def duepayment():
         ending_balances.append(ending_balance)
         balances.append(balance)
         dates.append(due_date)
-    if request.method == "GET":
-        
-            # k = db.execute("INSERT INTO repayment (user_id, loan_id, due_date, begining_balance, monthly_payment, principal, interest,  ending_balance, payment_proof, payment_mode,status) VALUES(:user_id, :loan_id, :due_date, :begining_balance, :monthly_payment, :principal, :interest,  :ending_balance, :payment_proof, :payment_mode, :status)",
-            # user_id= session["user_id"], loan_id = loan_id, due_date = due_date, begining_balance = balance, monthly_payment = naira(payment), principal = naira(principal), interest = interest,  ending_balance= ending_balance, payment_proof = "", payment_mode="", status=False) 
-            
+    if request.method == "GET":       
         return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period)
     else:
         datepaid = request.form.get("datepaid")  
         print('joel')
         paymentproof = request.form.get("paymentproof")  
-        imageUrl = request.form.get("imageUrl")  
-        print(datepaid)
-        print(paymentproof)
-        print(imageUrl)
+        imageUrl = request.form.get("imageUrl") 
+        if paymentproof == '':
+            return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period,message ='Please payment proof cannot be empty')
         if datepaid == '':
-            return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period,message ='Please add date cannot be empty')
+            return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period,message ='Please date paid cannot be empty')
         if imageUrl == '':
             return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period,message ='image url cannot be empty')
         else:
-
-            return render_template("paymenthistory.html", activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=period, interest= naira(interest))
+            db.execute("INSERT INTO repayment (user_id, loan_id, due_date, begining_balance, monthly_payment, principal, interest,  ending_balance, payment_proof, payment_mode,status,date_paid) VALUES(:user_id, :loan_id, :due_date, :begining_balance, :monthly_payment, :principal, :interest,  :ending_balance, :payment_proof, :payment_mode, :status, :date_paid)",
+            user_id= session["user_id"], loan_id = loan_id, due_date = due_date, begining_balance = balance, monthly_payment = naira(payment), principal = naira(principal), interest = interest,  ending_balance= ending_balance, payment_proof = imageUrl, payment_mode=paymentproof, status=False, date_paid = datepaid) 
+            userHistory = db.execute("SELECT * FROM repayment WHERE user_id = :user_id", user_id= session["user_id"])
+            # print(userHistory)
+            return render_template("paymenthistory.html", userHistory=userHistory, activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=period, interest= naira(interest))
 
 
 
