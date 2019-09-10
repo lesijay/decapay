@@ -7,8 +7,13 @@
 
 <div class="parentdiv">
   <div class="div1">
-
+      
   </div>
+  {% if message %}
+  <div  class="alert" style="margin: 0 auto; text-align: center; width:100%; height: 100%;" role="alert" >
+      <h3 class="bg-danger p-4">{{ message }}</h3>
+    </div>
+    {% endif %}
   <div class="tbl">
     <table class="table table-striped">
       <thead>
@@ -25,13 +30,14 @@
         {% for x in range(period) %}
         <form action="/duepayment" method="POST">
         <tr>
-          <td>{{ dates[x] }}</td>
+          <td name="dates">{{ dates[x] }}</td>
+          <input type="hidden" name="dates" value="{{ dates[x] }}" />
           <td>{{ balances[x] }}</td>
           <td>{{ activeLoan[0]["monthlyRepayment"] }}</td>
           <td><input type="date" name="datepaid"></td>
           <td>
             <select name = "paymentproof">
-              <option selected>Choose...</option>
+              <option selected disabled>Choose...</option>
               <option value="banktransfer">Bank Transfer</option>
               <option value="bankteller">Bank Teller</option>
               <option value="cash">Cash</option>
@@ -46,6 +52,7 @@
           <td></td>
           <td>0.00</td>
         </tr>
+        
         </tbody>
       </tbody>
     </table>
