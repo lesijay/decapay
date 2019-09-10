@@ -1,4 +1,5 @@
 import os
+import smtplib
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_mail import Mail, Message
@@ -11,19 +12,11 @@ from dateutil.relativedelta import relativedelta
 
 app = Flask(__name__)
 
-app.config["MAIL_SERVER"] = 'smtp.gmail.com'
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USE_SSL"] =  False
-# app.config["MAIL_DEBUG"] = True`
-app.config["MAIL_USERNAME"] = 'darotudeen@gmail.com'
-app.config["MAIL_PASSWORD"] =  'Youngster1'
-app.config["MAIL_DEFAULT_SENDER"] = 'darotudeen@gmail.com'
-app.config["MAIL_MAX_EMAILS"] = None
-# app.config["MAIL_SUPPRESS_SEND"] = False
-app.config["MAIL_ASCII_ATTACHMENTS"] = False
+server = smtplib.SMTP(host="smtp.gmail.com", port=587) 
+server.ehlo()
+server.starttls()
+server.login("decapays@gmail.com", "Decagon111")
 
-mail = Mail(app)
 
 # app.config['SESSION_TYPE'] = 'memcached'
 app.secret_key = os.urandom(24)
@@ -101,6 +94,8 @@ def register():
         response = location()
         return render_template("register.html",  message_get = response)
     elif request.method == 'POST':
+        response = location()
+        details = []
         first = request.form.get('firstname')
         last = request.form.get('lastname')
         username = request.form.get('username')
@@ -112,22 +107,27 @@ def register():
         address = request.form.get('address')
         state = request.form.get('state')
         city = request.form.get('city')
-                # check for existing username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+        # check for existing username
+        rows = db.execute("SELECT * FROM users WHERE username = :username",  username=request.form.get("username"))
+        print(details)
 
         #check username
         if not username:
-                return render_template ('register.html',  message = [" ", "You must provide a username"])
+                return render_template ('register.html',  message = [" ", "You must provide a username"], message_get = response, first = first, last = last, 
+                username=username, email=email, gender=gender)
             #check password
         elif not password:
-                return render_template('register.html', message = [" ", "Password not provided"])
+                return render_template('register.html', message = [" ", "Password not provided"], message_get = response, first = first, last = last, 
+                username=username, email=email, gender=gender)
             #check if passwords match
         elif password != confirmation:
-                return render_template('register.html',  message = [" ", "Passwords do no match"])
+                return render_template('register.html',  message = [" ", "Passwords do no match"], message_get = response,  first = first, last = last, 
+                username=username, email=email, gender=gender)
 
             #confirm username has not been taken
         elif (rows):
-                return render_template('register.html', message = [" ", "Username has been taken"])
+                return render_template('register.html', message = [" ", "Username has been taken"], message_get = response, first = first, last = last, 
+                username=username, email=email, gender=gender)
         #With all conditions met Insert user into database
         else:
             db.execute("INSERT INTO users(first, last, username, phone, email, password, address,  state, city,  gender) VALUES(:first, :last, :username, :phone, :email, :password, :address,  :state, :city,  :gender)", 
@@ -136,12 +136,13 @@ def register():
             
             rows = db.execute("SELECT * FROM users WHERE username = :username",
                           username=username)
-            # Remember which user has logged in
-            session["user_id"] = rows[0]["id"]
-            msg = Message("You have successfully registered on Decapay", recipients=[email])
+            
 
-            userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
-            return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
+            server.sendmail("decapays@gmail.com", email, "Congratulation your account has been verified" )
+    
+            session["user_id"] = username
+            # userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
+            return render_template("profile.html",message ="You have successfully registered", userName=session["user_id"])   
             
 
 @app.route('/create', methods=["GET", "POST"])
