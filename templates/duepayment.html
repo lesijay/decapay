@@ -23,7 +23,7 @@
       </thead>
       <tbody>
         {% for x in range(period) %}
-        <form action="/history" method="GET">
+        <form action="/duepayment" method="POST">
         <tr>
           <td>{{ dates[x] }}</td>
           <td>{{ balances[x] }}</td>
@@ -37,8 +37,8 @@
               <option value="cash">Cash</option>
               <option value="cheque">Cheque</option>
             </select></td>
-          <td><input type="file"></td>
-          <td><button class="btn btn-dark"><a href="/history?pmtnum={{x}}">Paid</a></button></td>
+          <td><input type="text" placeholder="image url" name="imageUrl"></td>
+          <td><button type="submit" class="btn btn-dark">Pay </button></td>
         </tr>
        </form>
         {% endfor %}
