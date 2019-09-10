@@ -194,50 +194,50 @@ def create():
 def history():
     if request.method == 'GET':
         
-    activeLoan = db.execute('SELECT * FROM loans WHERE userId = :userId and status = :status', userId= session["user_id"], status = "0")
-    payment = float(activeLoan[0]["monthlyRepayment"])
-    tbalance = activeLoan[0]["totalCostOfLoan"]
-    # print(userLoans)
-    startdate = datetime.datetime.now()
-    # activeLoan = db.execute('SELECT * FROM loans WHERE userId = :userId and status = :status', userId= session["user_id"], status = "0")
-    # print(activeLoan)
-    date = (startdate + relativedelta(months=+1)).strftime("%x")
-    period = activeLoan[0]["loanPeriod"]
-    tInterest = float(activeLoan[0]["totalInterest"])
-    # payment = float(activeLoan[0]["monthlyRepayment"])
-    rate = activeLoan[0]["interestRate"]
-    loan_id = activeLoan[0]["id"]
-    # tbalance = activeLoan[0]["totalCostOfLoan"]
-    interest = tInterest / period
-    principal = payment - interest
-    
-    
-    balances = []
-    dates =[]
-    ending_balances = []
-    for x in range(period):
-        due_date = (startdate + relativedelta(months=+x)).strftime("%x")
-        balance = tbalance - (x * payment)
-        ending_balance = tbalance - ((x + 1) * payment) 
-        ending_balance = naira(ending_balance)
-        balance = naira(balance)
-        balances.append(balance)
-        dates.append(due_date)
-        ending_balances.append(ending_balance)
-        # k = db.execute("INSERT INTO repayment (user_id, loan_id, due_date, begining_balance, monthly_payment, principal, interest,  ending_balance) VALUES(:user_id, :loan_id, :due_date, :begining_balance, :monthly_payment, :principal, :interest,  :ending_balance)",
-        # user_id= session["user_id"], loan_id = loan_id, due_date = due_date, begining_balance = balance, monthly_payment = payment, principal = principal, interest = interest,  ending_balance= ending_balance, payment_proof = payment_proof,) 
-    
+        activeLoan = db.execute('SELECT * FROM loans WHERE userId = :userId and status = :status', userId= session["user_id"], status = "0")
+        payment = float(activeLoan[0]["monthlyRepayment"])
+        tbalance = activeLoan[0]["totalCostOfLoan"]
+        # print(userLoans)
+        startdate = datetime.datetime.now()
+        # activeLoan = db.execute('SELECT * FROM loans WHERE userId = :userId and status = :status', userId= session["user_id"], status = "0")
+        # print(activeLoan)
+        date = (startdate + relativedelta(months=+1)).strftime("%x")
+        period = activeLoan[0]["loanPeriod"]
+        tInterest = float(activeLoan[0]["totalInterest"])
+        # payment = float(activeLoan[0]["monthlyRepayment"])
+        rate = activeLoan[0]["interestRate"]
+        loan_id = activeLoan[0]["id"]
+        # tbalance = activeLoan[0]["totalCostOfLoan"]
+        interest = tInterest / period
+        principal = payment - interest
+        
+        
+        balances = []
+        dates =[]
+        ending_balances = []
+        for x in range(period):
+            due_date = (startdate + relativedelta(months=+x)).strftime("%x")
+            balance = tbalance - (x * payment)
+            ending_balance = tbalance - ((x + 1) * payment) 
+            ending_balance = naira(ending_balance)
+            balance = naira(balance)
+            balances.append(balance)
+            dates.append(due_date)
+            ending_balances.append(ending_balance)
+            # k = db.execute("INSERT INTO repayment (user_id, loan_id, due_date, begining_balance, monthly_payment, principal, interest,  ending_balance) VALUES(:user_id, :loan_id, :due_date, :begining_balance, :monthly_payment, :principal, :interest,  :ending_balance)",
+            # user_id= session["user_id"], loan_id = loan_id, due_date = due_date, begining_balance = balance, monthly_payment = payment, principal = principal, interest = interest,  ending_balance= ending_balance, payment_proof = payment_proof,) 
+        
 
-    pmtnum = int(request.args.get("pmtnum"))
-    # pmt = pmtnum + 1
-    # print(pmt)
-    # print(pmtnum)
-    if pmtnum != "":
-        pmt = pmtnum + 1    
-        return render_template("paymenthistory.html",activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=pmt, interest= naira(interest))
-    else:
-        pmt = period
-        return render_template("paymenthistory.html",activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=pmt, interest= naira(interest))
+        pmtnum = int(request.args.get("pmtnum"))
+        # pmt = pmtnum + 1
+        # print(pmt)
+        # print(pmtnum)
+        if pmtnum != "":
+            pmt = pmtnum + 1    
+            return render_template("paymenthistory.html",activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=pmt, interest= naira(interest))
+        else:
+            pmt = period
+            return render_template("paymenthistory.html",activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=pmt, interest= naira(interest))
 
 
 @app.route('/duepayment', methods=["GET", "POST"])
@@ -267,18 +267,25 @@ def duepayment():
         ending_balances.append(ending_balance)
         balances.append(balance)
         dates.append(due_date)
-    if request.method == "GET":
-        
-            # k = db.execute("INSERT INTO repayment (user_id, loan_id, due_date, begining_balance, monthly_payment, principal, interest,  ending_balance, payment_proof, payment_mode,status) VALUES(:user_id, :loan_id, :due_date, :begining_balance, :monthly_payment, :principal, :interest,  :ending_balance, :payment_proof, :payment_mode, :status)",
-            # user_id= session["user_id"], loan_id = loan_id, due_date = due_date, begining_balance = balance, monthly_payment = naira(payment), principal = naira(principal), interest = interest,  ending_balance= ending_balance, payment_proof = "", payment_mode="", status=False) 
-            
+    if request.method == "GET":       
         return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period)
     else:
         datepaid = request.form.get("datepaid")  
+        print('joel')
         paymentproof = request.form.get("paymentproof")  
-        imageUrl = request.form.get("imageUrl")  
-        print(datepaid, paymentproof, imageUrl)
-        return render_template("paymenthistory.html", activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=period, interest= naira(interest))
+        imageUrl = request.form.get("imageUrl") 
+        if paymentproof == '':
+            return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period,message ='Please payment proof cannot be empty')
+        if datepaid == '':
+            return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period,message ='Please date paid cannot be empty')
+        if imageUrl == '':
+            return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period,message ='image url cannot be empty')
+        else:
+            db.execute("INSERT INTO repayment (user_id, loan_id, due_date, begining_balance, monthly_payment, principal, interest,  ending_balance, payment_proof, payment_mode,status,date_paid) VALUES(:user_id, :loan_id, :due_date, :begining_balance, :monthly_payment, :principal, :interest,  :ending_balance, :payment_proof, :payment_mode, :status, :date_paid)",
+            user_id= session["user_id"], loan_id = loan_id, due_date = due_date, begining_balance = balance, monthly_payment = naira(payment), principal = naira(principal), interest = interest,  ending_balance= ending_balance, payment_proof = imageUrl, payment_mode=paymentproof, status=False, date_paid = datepaid) 
+            userHistory = db.execute("SELECT * FROM repayment WHERE user_id = :user_id", user_id= session["user_id"])
+            # print(userHistory)
+            return render_template("paymenthistory.html", userHistory=userHistory, activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=period, interest= naira(interest))
 
 
 
