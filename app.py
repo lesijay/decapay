@@ -2,7 +2,7 @@ import os
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_mail import Mail, Message
-# from flask_session import Session
+from flask_session import Session
 from helpers import location
 from cs50 import SQL
 from helpers import naira, login_required
@@ -144,8 +144,10 @@ def register():
 
             rows = db.execute("SELECT * FROM users WHERE username = :username",
                           username=username)
-            msg = Message("You have successfully registered on Decapay", recipients=[email])
-
+            print("Not Today")
+            #msg = Message("You have successfully registered on Decapay", recipients=[email])
+            
+            print(1234)
             userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
             return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
             
