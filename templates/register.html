@@ -1,5 +1,8 @@
-{% extends "layout.html" %} {% block title %} - register {% endblock %} {% block
-main %}
+{% extends "layout.html" %} 
+{% block title %} 
+  - register 
+{% endblock %} 
+{% block main %}
 
 <div class="div1"></div>
 <div id="wrapper2" class="jumbotron col-md-12" style="padding: 0;">
@@ -8,21 +11,14 @@ main %}
     class="jumbotron mt-5 col-md-7 shadow"
     style="padding: 20px;"
   >
-    {% if message %} {% if message[1] != " " %}
+    {% if message %} 
+    {% if message[1] != " " %}
 
-    <div
-      class="alert alert-danger"
-      style="margin: 0 auto; text-align: center"
-      role="alert"
-    >
+    <div  class="alert alert-danger" style="margin: 0 auto; text-align: center" role="alert" >
       <p>{{ message[1] }}</p>
     </div>
     {% elif message[0] != " " %}
-    <div
-      class="alert alert-success"
-      style="margin: 0 auto; text-align: center"
-      role="alert"
-    >
+    <div class="alert alert-success" style="margin: 0 auto; text-align: center" role="alert" >
       <p>{{ message[0] }}</p>
     </div>
     {% endif %} {% endif %}
@@ -38,7 +34,8 @@ main %}
             class="form-control"
             id="inputEmail4"
             placeholder="First Name"
-          />
+            value="{{first}}"
+          required/>
         </div>
         <div class="form-group col-md-6">
           <label for="inputEmail4">Last Name</label>
@@ -48,7 +45,8 @@ main %}
             class="form-control"
             id="inputEmail4"
             placeholder="Last Name"
-          />
+            value="{{last}}"
+          required/>
         </div>
         <div class="form-group col-md-6">
           <label for="inputEmail4">Username</label>
@@ -58,7 +56,8 @@ main %}
             name="username"
             class="form-control"
             placeholder="username"
-          />
+            value="{{username}}"
+          required/>
         </div>
 
         <div class="form-group col-md-6">
@@ -69,13 +68,14 @@ main %}
             class="form-control"
             id="inputEmail4"
             placeholder="Phone Number"
-          />
+            value="{{phone}}"
+          required/>
         </div>
         <div
           class="alert container"
           id="unavailable"
           role="alert"
-          style="display:none; width: 250px; height: 50px; text-align: center"
+          style="display:none; width: 100%; height: 50px; text-align: center"
         >
           <p id="text" style="width: 100%"></p>
         </div>
@@ -87,7 +87,8 @@ main %}
             class="form-control"
             id="inputEmail4"
             placeholder="Email"
-          />
+            value="{{email}}"
+          required/>
         </div>
         <div class="form-group col-md-6">
           <label for="inputPassword4">Password</label>
@@ -97,7 +98,7 @@ main %}
             name="password"
             id="inputPassword4"
             placeholder="Password"
-          />
+          required/>
         </div>
         <div class="form-group col-md-6">
           <label for="inputPassword4">Confirm Password</label>
@@ -107,7 +108,7 @@ main %}
             name="confirmation"
             id="inputPassword5"
             placeholder="Confirm Password"
-          />
+         required />
         </div>
         <div class="form-group col-md-6">
           <label for="inputState">Gender</label>
@@ -128,6 +129,7 @@ main %}
             class="form-control"
             id="inputAddress"
             placeholder="1234 Main St"
+            value="{{address}}"
           />
         </div>
 

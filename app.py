@@ -1,32 +1,30 @@
 import os
+import re
+from cs50 import SQL
+import smtplib
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_mail import Mail, Message
 from flask_session import Session
 from helpers import location
-from cs50 import SQL
 from helpers import naira, login_required
 import datetime
 from dateutil.relativedelta import relativedelta
 
 
 
-
 app = Flask(__name__)
 
-app.config["MAIL_SERVER"] = 'smtp.gmail.com'
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USE_SSL"] =  False
-# app.config["MAIL_DEBUG"] = True`
-app.config["MAIL_USERNAME"] = 'darotudeen@gmail.com'
-app.config["MAIL_PASSWORD"] =  'Youngster1'
-app.config["MAIL_DEFAULT_SENDER"] = 'darotudeen@gmail.com'
-app.config["MAIL_MAX_EMAILS"] = None
-# app.config["MAIL_SUPPRESS_SEND"] = False
-app.config["MAIL_ASCII_ATTACHMENTS"] = False
+# Configure CS50 Library to use SQLite database
+db = SQL("sqlite:///decapay.db")
+# db.execute("CREATE TABLE  boys(first text, last text)")
 
-mail = Mail(app)
+server = smtplib.SMTP(host="smtp.gmail.com", port=587)
+server.ehlo()
+server.starttls()
+server.login("decapays@gmail.com", "Decagon111")
+
+
 
 # app.config['SESSION_TYPE'] = 'memcached'
 app.secret_key = os.urandom(24)
@@ -41,19 +39,16 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-# Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///decapay.db")
+
+
 
 @app.route('/')
 def index():
-     # Forget any user_id
-    session.clear()
-
     return render_template("index.html")
+
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-
     """Log user in"""
 
     # Forget any user_id
@@ -64,11 +59,11 @@ def login():
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            return render_template('login.html', message_error = "must provide username")
+            return render_template('login.html', message_error="must provide username")
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return render_template('login.html', message_error= "must provide password")
+            return render_template('login.html', message_error="must provide password")
 
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE username = :username",
@@ -76,40 +71,42 @@ def login():
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["password"], request.form.get("password")):
-            return render_template('login.html', message_error = "invalid username and/or password")
+            return render_template('login.html', message_error="invalid username and/or password")
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
-        # print("MEEEE")
-        # print(session["user_id"])
-        
 
         # Redirect user to home page
-        userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
-        return render_template("profile.html", message = "You have successfully logged in", userName=userDetails[0]["username"])
-        
+        userDetails = db.execute(
+            'SELECT * FROM users WHERE id = :userId', userId=session["user_id"])
+        return render_template("profile.html", message="You have successfully logged in", userName=userDetails[0]["username"])
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
     return render_template("login.html")
 
+
 @app.route("/check", methods=["GET"])
 def check():
     """Return true if username available, else false, in JSON format"""
     q = request.args.get("q")
-    rows = db.execute("SELECT * FROM users WHERE username = :username", username= q)
+    rows = db.execute(
+        "SELECT * FROM users WHERE username = :username", username=q)
     if (rows):
-        return jsonify(message = "True")
-    return jsonify(message = "False")
+        return jsonify(message="True")
+    return jsonify(message="False")
 
-@app.route('/register', methods=["GET", "POST"]) 
+
+@app.route('/register', methods=["GET", "POST"])
 def register():
     # render page on get request
     if request.method == 'GET':
         response = location()
-        return render_template("register.html",  message_get = response)
+        return render_template("register.html",  message_get=response)
     elif request.method == 'POST':
+        response = location()
+        details = []
         first = request.form.get('firstname')
         last = request.form.get('lastname')
         username = request.form.get('username')
@@ -121,28 +118,38 @@ def register():
         address = request.form.get('address')
         state = request.form.get('state')
         city = request.form.get('city')
-                # check for existing username
-        rows = db.execute("SELECT * FROM users WHERE username = :username", username=request.form.get("username"))
+        # check for existing username
+        rows = db.execute("SELECT * FROM users WHERE username = :username",
+                          username=request.form.get("username"))
+        print(details)
 
         #check username
         if not username:
-                return render_template ('register.html',  message = [" ", "You must provide a username"])
+                return render_template('register.html',  message=[" ", "You must provide a username"], message_get=response, first=first, last=last,
+                                       username=username, email=email, gender=gender)
             #check password
         elif not password:
-                return render_template('register.html', message = [" ", "Password not provided"])
-            #check if passwords match
+                return render_template('register.html', message=[" ", "Password not provided"], message_get=response, first=first, last=last,
+                                       username=username, email=email, gender=gender)
+        elif not re.match(r'[A-Za-z0-9@#$%^&+=]{8,}', password):
+                return render_template('register.html', message=[" ", "Password must be atleast 8 characters long"], message_get=response, first=first, last=last,
+                                    username=username, email=email, gender=gender)
+        #check if passwords match
         elif password != confirmation:
-                return render_template('register.html',  message = [" ", "Passwords do no match"])
+                return render_template('register.html',  message=[" ", "Passwords do no match"], message_get=response,  first=first, last=last,
+                                       username=username, email=email, gender=gender)
 
-            #confirm username has not been taken
+        #confirm username has not been taken
         elif (rows):
-                return render_template('register.html', message = [" ", "Username has been taken"])
+                return render_template('register.html', message=[" ", "Username has been taken"], message_get=response, first=first, last=last,
+                                       username=username, email=email, gender=gender)
         #With all conditions met Insert user into database
         else:
-            db.execute("INSERT INTO users(first, last, username, phone, email, password, address,  state, city,  gender) VALUES(:first, :last, :username, :phone, :email, :password, :address,  :state, :city,  :gender)", 
-            first = first, last = last, username =username, phone=phone, email=email,  password = generate_password_hash(password), address = address,  state=state,  city = city, gender = gender)
+            db.execute("INSERT INTO users(first, last, username, phone, email, password, address,  state, city,  gender) VALUES(:first, :last, :username, :phone, :email, :password, :address,  :state, :city,  :gender)",
+                       first=first, last=last, username=username, phone=phone, email=email,  password=generate_password_hash(password), address=address,  state=state,  city=city, gender=gender)
 
             rows = db.execute("SELECT * FROM users WHERE username = :username",
+<<<<<<< HEAD
                           username=username)
             print("Not Today")
             #msg = Message("You have successfully registered on Decapay", recipients=[email])
@@ -151,86 +158,167 @@ def register():
             userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
             return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
             
+=======
+                              username=username)
+
+            server.sendmail("decapays@gmail.com", email,
+                            "Congratulation your account has been verified")
+
+            session["user_id"] = username
+            # userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
+            return render_template("profile.html", message="You have successfully registered", userName=session["user_id"])
+
+>>>>>>> 7d5d6383628c90f81dba77ef6eafc24ced195abd
 
 @app.route('/create', methods=["GET", "POST"])
 @login_required
-def create():    
-    if session.get("user_id") is None:
-        return render_template("notfound.html", details="Login Is Required")
-    elif request.method =="POST":
-                startdate = datetime.datetime.now()
-                loantype = request.form.get("loantype")               
-                amountborrowed = int(request.form.get("amountborrowed"))
-                interestRate = float(request.form.get("interestrate"))
-                period = int(request.form.get("period"))
-                totalInterest = amountborrowed * interestRate
-                totalCostOfLoan = amountborrowed + totalInterest
-                monthlyPayment = totalCostOfLoan / period
-                monthlyInterest = totalInterest / period
-                monthlyPrincipal = monthlyPayment - monthlyInterest  
-               
-                # insert loan details into loan table             
-                k = db.execute("INSERT INTO loans (userId, loanType, loanAmount, interestRate, loanPeriod, monthlyRepayment, totalInterest,  totalCostOfLoan, startdate) VALUES(:userId, :loanType, :loanAmount, :interestRate, :loanPeriod, :monthlyRepayment, :totalInterest,  :totalCostOfLoan, :startdate)",
-                userId= session["user_id"], loanType = loantype, loanAmount = naira(amountborrowed), interestRate = interestRate, loanPeriod = period, monthlyRepayment = monthlyPayment, totalInterest = naira(totalInterest),  totalCostOfLoan= totalCostOfLoan, startdate = startdate) 
-                return render_template("/success.html")
-    elif request.method=="GET":
-        userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
-        # print(userLoans)
-        if not userLoans:
-            loantype = request.args.get("loantype")        
-            if loantype == "Decamini":
-                    interestRate = 0.03
-                    return render_template("create.html",loantype=loantype, mini=100000, max=300000, interestRate=interestRate)
-            elif loantype == "Decaflex":
-                    interestRate = 0.05
-                    return render_template("create.html",loantype=loantype, mini=310000, max=900000, interestRate=interestRate)
-            elif loantype == "Decalarge":
-                    interestRate = 0.10
-                    return render_template("create.html",loantype=loantype, mini=910000, max=2000000, interestRate=interestRate)
-            else:                       
-                    userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
-                    return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
+def create():
+    def ableToGetLoan(loantype):
+        if loantype == "Decamini":
+            interestRate = 0.03
+            return render_template("create.html", loantype=loantype, mini=100000, max=300000, interestRate=interestRate)
+        elif loantype == "Decaflex":
+            interestRate = 0.05
+            return render_template("create.html", loantype=loantype, mini=310000, max=900000, interestRate=interestRate)
+        elif loantype == "Decalarge":
+            interestRate = 0.10
+            return render_template("create.html", loantype=loantype, mini=910000, max=2000000, interestRate=interestRate)
         else:
-            return render_template("noteligible.html", details="Please Pay up before making another application")       
+            userDetails = db.execute(
+                'SELECT * FROM users WHERE id = :userId', userId=session["user_id"])
+            return render_template("profile.html", message="You have successfully registered", userName=userDetails[0]["username"])
+    if request.method == "POST":
+        loantype = request.form.get("loantype")
+        amountborrowed = int(request.form.get("amountborrowed"))
+        interestRate = float(request.form.get("interestrate"))
+        period = int(request.form.get("period"))
+        totalInterest = amountborrowed * interestRate
+        totalCostOfLoan = amountborrowed + totalInterest
+        monthlyPayment = totalCostOfLoan / period
+        monthlyInterest = totalInterest / period
+        monthlyPrincipal = monthlyPayment - monthlyInterest
+        k = db.execute("INSERT INTO loans (userId, loanType, loanAmount, interestRate, loanPeriod, monthlyRepayment, totalInterest,  totalCostOfLoan, status) VALUES(:userId, :loanType, :loanAmount, :interestRate, :loanPeriod, :monthlyRepayment, :totalInterest,  :totalCostOfLoan, :status)",
+                       userId=session["user_id"], loanType=loantype, loanAmount=amountborrowed, interestRate=interestRate, loanPeriod=period, monthlyRepayment=monthlyPayment, totalInterest=totalInterest,  totalCostOfLoan=totalCostOfLoan, status=False)
 
-@app.route('/history')
+        return render_template("/success.html")
+    elif request.method == "GET":
+        userLoans = db.execute(
+            'SELECT * FROM loans WHERE userId = :userId', userId=session["user_id"])
+        loantype = request.args.get("loantype")
+        if len(userLoans) == 0:
+            return ableToGetLoan(loantype)
+        status = userLoans[0]["status"]
+        if status == True:
+            return ableToGetLoan(loantype)
+        else:
+            return render_template("noteligible.html", details="Please Pay up before making another application")
+
+
+@app.route('/history', methods=['GET', 'POST'])
 @login_required
 def history():
-    userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
-    payment = naira(float(userLoans[0]["monthlyRepayment"]))
-    tbalance = naira(userLoans[0]["totalCostOfLoan"])
-    # print(userLoans)
-
-    return render_template("paymenthistory.html",userLoans = userLoans,payment = payment, tbalance =tbalance)
-
-@app.route('/duepayment')
-@login_required
-def duepayment():
-    if request.method == "GET":
+    if request.method == 'GET':
+        
+        activeLoan = db.execute('SELECT * FROM loans WHERE userId = :userId and status = :status', userId= session["user_id"], status = "0")
+        payment = float(activeLoan[0]["monthlyRepayment"])
+        tbalance = activeLoan[0]["totalCostOfLoan"]
+        # print(userLoans)
         startdate = datetime.datetime.now()
-        userLoans = db.execute('SELECT * FROM loans WHERE userId = :userId', userId= session["user_id"])
+        # activeLoan = db.execute('SELECT * FROM loans WHERE userId = :userId and status = :status', userId= session["user_id"], status = "0")
+        # print(activeLoan)
         date = (startdate + relativedelta(months=+1)).strftime("%x")
-        period = userLoans[0]["loanPeriod"]
-        userLoans[0]["totalInterest"]
-        payment = float(userLoans[0]["monthlyRepayment"])
-        rate = userLoans[0]["interestRate"]
-        tbalance = userLoans[0]["totalCostOfLoan"]
-        print(tbalance)
+        period = activeLoan[0]["loanPeriod"]
+        tInterest = float(activeLoan[0]["totalInterest"])
+        # payment = float(activeLoan[0]["monthlyRepayment"])
+        rate = activeLoan[0]["interestRate"]
+        loan_id = activeLoan[0]["id"]
+        # tbalance = activeLoan[0]["totalCostOfLoan"]
+        interest = tInterest / period
+        principal = payment - interest
+        
+        
         balances = []
         dates =[]
-        print(period)
-        print(payment)
+        ending_balances = []
         for x in range(period):
-            date = (startdate + relativedelta(months=+x)).strftime("%x")
+            due_date = (startdate + relativedelta(months=+x)).strftime("%x")
             balance = tbalance - (x * payment)
+            ending_balance = tbalance - ((x + 1) * payment) 
+            ending_balance = naira(ending_balance)
             balance = naira(balance)
             balances.append(balance)
-            dates.append(date)
-        return render_template("duepayment.html",userLoans = userLoans, dates = dates,balances = balances,period = period)
+            dates.append(due_date)
+            ending_balances.append(ending_balance)
+            # k = db.execute("INSERT INTO repayment (user_id, loan_id, due_date, begining_balance, monthly_payment, principal, interest,  ending_balance) VALUES(:user_id, :loan_id, :due_date, :begining_balance, :monthly_payment, :principal, :interest,  :ending_balance)",
+            # user_id= session["user_id"], loan_id = loan_id, due_date = due_date, begining_balance = balance, monthly_payment = payment, principal = principal, interest = interest,  ending_balance= ending_balance, payment_proof = payment_proof,) 
+        
+
+        pmtnum = int(request.args.get("pmtnum"))
+        # pmt = pmtnum + 1
+        # print(pmt)
+        # print(pmtnum)
+        if pmtnum != "":
+            pmt = pmtnum + 1    
+            return render_template("paymenthistory.html",activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=pmt, interest= naira(interest))
+        else:
+            pmt = period
+            return render_template("paymenthistory.html",activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=pmt, interest= naira(interest))
+
+
+@app.route('/duepayment', methods=["GET", "POST"])
+@login_required
+def duepayment():
+    startdate = datetime.datetime.now()
+    activeLoan = db.execute(
+        'SELECT * FROM loans WHERE userId = :userId AND status = :status', userId=session["user_id"], status=False)
+    date = (startdate + relativedelta(months=+1)).strftime("%x")
+    period = activeLoan[0]["loanPeriod"]
+    tInterest = float(activeLoan[0]["totalInterest"])
+    payment = float(activeLoan[0]["monthlyRepayment"])
+    rate = activeLoan[0]["interestRate"]
+    loan_id = activeLoan[0]["id"]
+    tbalance = float(activeLoan[0]["totalCostOfLoan"])
+    interest = tInterest / period
+    principal = payment - interest
+
+    balances = []
+    dates = []
+    ending_balances = []
+    pmt = 3
+    for x in range(period):
+        due_date = (startdate + relativedelta(months=+x)).strftime("%x")
+        balance = tbalance - (x * payment)
+        ending_balance = tbalance - ((x + 1) * payment)
+        balance = naira(balance)
+        ending_balances.append(ending_balance)
+        balances.append(balance)
+        dates.append(due_date)
+    if request.method == "GET":       
+        return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period)
+    else:
+        datepaid = request.form.get("datepaid")  
+        print('joel')
+        paymentproof = request.form.get("paymentproof")  
+        imageUrl = request.form.get("imageUrl") 
+        if paymentproof == '':
+            return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period,message ='Please payment proof cannot be empty')
+        if datepaid == '':
+            return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period,message ='Please date paid cannot be empty')
+        if imageUrl == '':
+            return render_template("duepayment.html",activeLoan = activeLoan, dates = dates,balances = balances,period = period,message ='image url cannot be empty')
+        else:
+            db.execute("INSERT INTO repayment (user_id, loan_id, due_date, begining_balance, monthly_payment, principal, interest,  ending_balance, payment_proof, payment_mode,status,date_paid) VALUES(:user_id, :loan_id, :due_date, :begining_balance, :monthly_payment, :principal, :interest,  :ending_balance, :payment_proof, :payment_mode, :status, :date_paid)",
+            user_id= session["user_id"], loan_id = loan_id, due_date = due_date, begining_balance = balance, monthly_payment = naira(payment), principal = naira(principal), interest = interest,  ending_balance= ending_balance, payment_proof = imageUrl, payment_mode=paymentproof, status=False, date_paid = datepaid) 
+            userHistory = db.execute("SELECT * FROM repayment WHERE user_id = :user_id", user_id= session["user_id"])
+            # print(userHistory)
+            return render_template("paymenthistory.html", userHistory=userHistory, activeLoan = activeLoan,payment = naira(payment), tbalance =naira(tbalance), balances=balances,dates=dates, ending_balances=ending_balances, principal = naira(principal), pmt=period, interest= naira(interest))
+
+
 
 @app.route('/success')
 def success():
     return render_template("success.html")
+
 
 @app.route('/profile')
 @login_required
@@ -238,8 +326,10 @@ def profile():
     if session.get("user_id") is None:
         return render_template("notfound.html", details="Login Is Required")
     else:
-        userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
+        userDetails = db.execute(
+            'SELECT * FROM users WHERE id = :userId', userId=session["user_id"])
         return render_template("profile.html", userName=userDetails[0]["username"])
+
 
 @app.route("/logout")
 def logout():
@@ -250,5 +340,3 @@ def logout():
     flash('You have successfully logged out')
     # Redirect user to login form
     return redirect("/login")
-
-
