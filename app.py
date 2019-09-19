@@ -149,16 +149,6 @@ def register():
                        first=first, last=last, username=username, phone=phone, email=email,  password=generate_password_hash(password), address=address,  state=state,  city=city, gender=gender)
 
             rows = db.execute("SELECT * FROM users WHERE username = :username",
-<<<<<<< HEAD
-                          username=username)
-            print("Not Today")
-            #msg = Message("You have successfully registered on Decapay", recipients=[email])
-            
-            print(1234)
-            userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
-            return render_template("profile.html",message ="You have successfully registered", userName=userDetails[0]["username"])   
-            
-=======
                               username=username)
 
             server.sendmail("decapays@gmail.com", email,
@@ -168,7 +158,6 @@ def register():
             # userDetails = db.execute('SELECT * FROM users WHERE id = :userId', userId= session["user_id"])
             return render_template("profile.html", message="You have successfully registered", userName=session["user_id"])
 
->>>>>>> 7d5d6383628c90f81dba77ef6eafc24ced195abd
 
 @app.route('/create', methods=["GET", "POST"])
 @login_required

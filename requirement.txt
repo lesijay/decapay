@@ -1,6 +1,0 @@
-cs50
-Flask
-Flask-Session
-requests
-install python-dateutil
-requests
