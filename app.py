@@ -1,6 +1,6 @@
 import os
 import re
-from cs50 import SQL
+from sql import SQL
 import smtplib
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -17,7 +17,13 @@ app = Flask(__name__)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///decapay.db")
+
 # db.execute("CREATE TABLE  boys(first text, last text)")
+# db.execute("CREATE TABLE  boys(first text, last text)")
+
+db.execute("INSERT INTO users(first, last, username, phone, email, password, address,  state, city,  gender) VALUES(:first, :last, :username, :phone, :email, :password, :address,  :state, :city,  :gender)",
+                       first='first', last='last', username='username', phone='phone', email='email',  password='generate_password_hash', address='address',  state='state',  city='city', gender='gender')
+
 
 server = smtplib.SMTP(host="smtp.gmail.com", port=587)
 server.ehlo()
