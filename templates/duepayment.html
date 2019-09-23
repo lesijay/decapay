@@ -27,12 +27,10 @@
         </tr>
       </thead>
       <tbody>
-        {% for x in range(period) %}
         <form action="/duepayment" method="POST">
         <tr>
-          <td name="dates">{{ dates[x] }}</td>
-          <input type="hidden" name="dates" value="{{ dates[x] }}" />
-          <td>{{ balances[x] }}</td>
+          <td>{{  repayments_details[x]["due_date"] }}</td>
+          <td>{{ repayments_details[x]["begining_balance"]  }}</td>
           <td>{{ activeLoan[0]["monthlyRepayment"] }}</td>
           <td><input type="date" name="datepaid"></td>
           <td>
@@ -47,12 +45,6 @@
           <td><button type="submit" class="btn btn-dark">Pay </button></td>
         </tr>
        </form>
-        {% endfor %}
-        <tr>
-          <td></td>
-          <td>0.00</td>
-        </tr>
-        
         </tbody>
       </tbody>
     </table>

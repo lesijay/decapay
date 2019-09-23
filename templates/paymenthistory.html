@@ -13,7 +13,7 @@ block main %}
               <tbody>
                 <tr>
                   <td>Loan Amount</td>
-                  <td>{{ activeLoan[0]["loanAmount"] }}</td>
+                  <td>{{ amountborrowed }}</td>
                 </tr>
                 <tr>
                   <td>Interest Rate</td>
@@ -48,7 +48,7 @@ block main %}
                 </tr>
                 <tr>
                   <td>Total Interest</td>
-                  <td>{{ activeLoan[0]["totalInterest"] }}</td>
+                  <td>{{ totalInterest }}</td>
                 </tr>
                 <tr>
                   <td>Total Cost of Loan</td>
@@ -76,28 +76,16 @@ block main %}
         </tr>
       </thead>
       <tbody>
-        <!-- {% for x in range(pmt) %}
+        {% for x in range(activeLoan[0]["loanPeriod"]) %}
         <tr>
           <td>{{ x + 1 }}</td>
-          <td>{{ dates[x] }}</td>
-          <td>{{ balances[x] }}</td>
+          <td>{{ repayments_details[x]["due_date"] }}</td>
+          <td>{{ repayments_details[x]["begining_balance"] }}</td>
           <td>{{ payment }}</td>
-          <td>{{ principal }}</td>
-          <td>{{ interest }}</td>
-          <td>{{ ending_balances[x] }}</td>
+          <td>{{ repayments_details[0]["principal"] }}</td>
+          <td>{{ repayments_details[0]["interest"] }}</td>
+          <td>{{ repayments_details[x]["ending_balance"] }}</td>
           <td>unconfirmed</td>
-        </tr>
-        {% endfor %}  -->
-        {% for x in userHistory %}
-        <tr>
-          <td>{{ x.loan_id }}</td>
-          <td>{{ x.due_date }}</td>
-          <td>{{ x.begining_balance }}</td>
-          <td>{{ x.monthly_payment }}</td>
-          <td>{{ x.principal }}</td>
-          <td>₦{{ x.interest }}</td>
-          <td>{{ x.ending_balance }}</td>
-          <td>{{ x.status }}</td>
         </tr>
         {% endfor %}
       </tbody>
